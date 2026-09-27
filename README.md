@@ -7,7 +7,11 @@ An interactive single-page roadmap to track your progress through the full Progr
 
 **Live page:** https://elhendawy-1.github.io/Fundamentals-Roadmap/
 
-**Access password:** `Fundamental@2026`
+**Access password:** (click copy icon to copy)
+
+```text
+Fundamental@2026
+```
 
 **Local files:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
 
@@ -75,7 +79,10 @@ Master C#, databases, and real-world application development.
 ## How to Use
 
 1. Open `fundamentals-roadmap.html` (or `index.html`) in any browser
-2. Enter password: `Fundamental@2026`
+2. Enter password (copy below):
+```text
+Fundamental@2026
+```
 3. View overall progress in the dashboard
 4. Filter by Stage / Free / C++ / C# / SQL / Algorithms / OOP / DS
 5. Click `Start Learning` / `Continue Learning` to go to the course
