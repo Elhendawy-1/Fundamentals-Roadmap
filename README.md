@@ -7,8 +7,6 @@ An interactive single-page roadmap to track your progress through the full Progr
 
 **Live page:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
 
-**Demo / Access password for the page:** `Fundamental@2026`
-
 ---
 
 ## What You Will Take
@@ -64,7 +62,7 @@ Master C#, databases, and real-world application development.
 - **YouTube buttons:** free playlists for courses 1-3
 - **Support & Coupons section:** SUPPORT25% / 50% / 75% / 100% with copy button
 - **Responsive dark UI:** gradient `#0f0c29 → #302b63 → #24243e`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoint 768px
-- **Password gate:** client-side gate (`Fundamental@2026`, stored in `sessionStorage`)
+- **Password gate:** client-side gate (stored in `sessionStorage`)
 
 > Note: password + progress are client-side only (HTML/JS). Anyone can view source. Don't use for real security.
 
@@ -73,7 +71,7 @@ Master C#, databases, and real-world application development.
 ## How to Use
 
 1. Open `fundamentals-roadmap.html` (or `index.html`) in any browser
-2. Enter password: `Fundamental@2026`
+2. Enter your access password
 3. View overall progress in the dashboard
 4. Filter by Stage / Free / C++ / C# / SQL / Algorithms / OOP / DS
 5. Click `Start Learning` / `Continue Learning` to go to the course
