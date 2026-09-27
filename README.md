@@ -15,6 +15,8 @@ Fundamental@2026
 
 **Local files:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
 
+> 🎁 **Don't miss the coupons at the end of the webpage — scroll down for different discounts (25%, 50%, 75%, 100%)!**
+
 ---
 
 ## What You Will Take
@@ -59,6 +61,21 @@ Master C#, databases, and real-world application development.
 
 ---
 
+## 🎁 Discount Coupons
+
+**Scroll to the end of the webpage to find Support & Coupons with different discounts!**
+
+| Discount | Coupon Code | Copy |
+|----------|-------------|------|
+| 25% OFF | `SUPPORT25%` | click Copy Code button on site |
+| 50% OFF | `SUPPORT50%` | click Copy Code button on site |
+| 75% OFF | `SUPPORT75%` | click Copy Code button on site |
+| 100% OFF | `SUPPORT100%` | click Copy Code button on site |
+
+Use the `Copy Code` button under each coupon on the live page to copy instantly.
+
+---
+
 ## Features of This Page
 
 - **Overall Progress Dashboard:** total courses (24), total lessons, completed, % progress
@@ -89,6 +106,7 @@ Fundamental@2026
 6. Click `View All Lessons` → click lessons to mark complete
 7. Progress auto-saves to `localStorage`
 8. Use `Reset All Progress` to start over
+9. Scroll to the bottom for discount coupons (25% / 50% / 75% / 100%)
 
 ---
 
