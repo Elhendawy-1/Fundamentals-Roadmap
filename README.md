@@ -5,7 +5,9 @@
 
 An interactive single-page roadmap to track your progress through the full Programming Fundamentals path — from zero to professional C# / SQL developer.
 
-**Live page:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
+**Live page:** https://elhendawy-1.github.io/Fundamentals-Roadmap/
+
+**Local files:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
 
 ---
 
