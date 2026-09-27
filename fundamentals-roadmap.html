@@ -1,0 +1,1247 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programming Fundamentals Roadmap</title>
+    <style>
+        :root {
+            --accent-1: #00d2ff;
+            --accent-2: #3a7bd5;
+            --bg-dark: #0a0a1a;
+            --bg-card: #12122a;
+            --bg-card-hover: #1a1a3a;
+            --text-primary: #e0e0e0;
+            --text-secondary: #8888aa;
+            --border-color: #2a2a4a;
+            --success: #00c853;
+            --warning: #ffc107;
+            --danger: #ff4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #0d1b2a 50%, #1b2838 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+        .main-content {
+            animation: fadeIn 0.6s ease;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, rgba(0,210,255,0.1), rgba(58,123,213,0.1));
+            border-bottom: 1px solid var(--border-color);
+        }
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+        }
+        .subtitle { color: var(--text-secondary); font-size: 1.1rem; }
+        .stats-bar { display: flex; justify-content: center; gap: 40px; margin-top: 20px; flex-wrap: wrap; }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: bold; color: var(--accent-1); }
+        .stat-label { font-size: 0.85rem; color: var(--text-secondary); }
+        .filters { display: flex; gap: 10px; margin: 30px 0; flex-wrap: wrap; justify-content: center; }
+        .filter-btn {
+            padding: 10px 20px; border: 1px solid var(--border-color);
+            background: var(--bg-card); color: var(--text-primary);
+            border-radius: 25px; cursor: pointer; transition: all 0.3s; font-size: 0.9rem;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            border-color: transparent;
+        }
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 25px; margin-top: 20px;
+        }
+        .course-card {
+            background: var(--bg-card); border-radius: 16px; padding: 25px;
+            border: 1px solid var(--border-color); transition: all 0.3s;
+            position: relative; overflow: hidden;
+        }
+        .course-card:hover {
+            transform: translateY(-5px); background: var(--bg-card-hover);
+            box-shadow: 0 10px 40px rgba(0,210,255,0.1);
+        }
+        .course-card::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+        }
+        .course-card.completed::before {
+            background: linear-gradient(90deg, var(--success), #20c997);
+        }
+        .course-card.completed .course-number {
+            background: linear-gradient(135deg, var(--success), #20c997);
+        }
+        .stage-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            background: rgba(58, 123, 213, 0.1);
+            border-radius: 12px;
+            border-left: 4px solid var(--accent-2);
+            grid-column: 1 / -1;
+        }
+        .stage-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .stage-info h2 {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+        .stage-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .course-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
+        .course-number {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white; width: 36px; height: 36px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 0.9rem;
+        }
+        .badges { display: flex; gap: 8px; }
+        .badge-free { background: var(--success); color: white; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .badge-paid { background: var(--warning); color: #333; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; }
+        .course-title { font-size: 1.2rem; margin-bottom: 10px; color: white; }
+        .course-description { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 15px; line-height: 1.5; }
+        .course-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 15px; }
+        .tag { background: rgba(0,210,255,0.1); color: var(--accent-1); padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; }
+        .progress-section { margin-bottom: 20px; }
+        .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.85rem; }
+        .progress-bar { height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-1), var(--accent-2)); border-radius: 4px; transition: width 0.3s; }
+        .lessons-preview { margin-bottom: 20px; }
+        .lesson-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border-color); font-size: 0.85rem; }
+        .lesson-item:last-child { border-bottom: none; }
+        .lesson-status {
+            width: 20px; height: 20px; border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+        }
+        .lesson-status.completed { background: var(--success); border-color: var(--success); }
+        .lesson-status.completed::after { content: '\2713'; color: white; font-size: 12px; }
+        .lesson-status:hover { border-color: var(--accent-1); transform: scale(1.15); }
+        .lesson-name { flex: 1; color: var(--text-secondary); }
+        .lesson-name.completed { color: var(--text-primary); text-decoration: line-through; }
+        .lesson-duration { color: var(--text-secondary); font-size: 0.75rem; }
+        .course-actions { display: flex; gap: 10px; }
+        .btn {
+            flex: 1; padding: 12px; border-radius: 8px; border: none;
+            cursor: pointer; font-weight: 600; transition: all 0.3s;
+            text-align: center; text-decoration: none;
+        }
+        .btn-primary { background: linear-gradient(135deg, var(--accent-1), var(--accent-2)); color: white; }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 5px 20px rgba(0,210,255,0.3); }
+        .btn-secondary { background: var(--bg-dark); color: var(--text-primary); border: 1px solid var(--border-color); }
+        .btn-secondary:hover { background: var(--border-color); }
+        .btn-youtube {
+            background: #ff0000;
+            color: white;
+            flex: 0.5;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+        .btn-youtube:hover {
+            background: #cc0000;
+            transform: scale(1.02);
+        }
+        .btn-reset { background: var(--danger); color: white; margin-top: 30px; padding: 12px 30px; }
+        .btn-reset:hover { opacity: 0.85; }
+        .modal-overlay {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); z-index: 1000;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: var(--bg-card); border-radius: 16px; width: 90%;
+            max-width: 700px; max-height: 80vh; overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+        .modal-header {
+            padding: 20px; border-bottom: 1px solid var(--border-color);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .modal-title { font-size: 1.3rem; }
+        .modal-close { background: none; border: none; color: var(--text-secondary); font-size: 1.5rem; cursor: pointer; }
+        .modal-close:hover { color: white; }
+        .modal-body { padding: 20px; overflow-y: auto; max-height: 60vh; }
+        .modal-progress { margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color); }
+        .modal-progress-text { font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 10px; }
+        .modal-lesson { display: flex; align-items: center; gap: 12px; padding: 12px; border-bottom: 1px solid var(--border-color); }
+        .modal-lesson:last-child { border-bottom: none; }
+        .modal-lesson-num { color: var(--text-secondary); font-size: 0.85rem; min-width: 30px; }
+        .modal-lesson-info { flex: 1; }
+        .modal-lesson-name { font-size: 0.95rem; }
+        .modal-lesson-duration { font-size: 0.8rem; color: var(--text-secondary); }
+        .coupon-section { margin-top: 60px; padding: 40px 20px; text-align: center; }
+        .coupon-section h2 {
+            font-size: 2rem;
+            background: linear-gradient(90deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 10px;
+        }
+        .coupon-subtitle { color: var(--text-secondary); margin-bottom: 30px; font-size: 1.1rem; }
+        .coupon-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px; max-width: 900px; margin: 0 auto;
+        }
+        .coupon-card {
+            background: var(--bg-card); border: 1px solid var(--border-color);
+            border-radius: 16px; padding: 25px; text-align: center; transition: all 0.3s;
+        }
+        .coupon-card:hover {
+            transform: translateY(-5px); border-color: var(--accent-1);
+            box-shadow: 0 10px 30px rgba(0,210,255,0.2);
+        }
+        .coupon-discount {
+            font-size: 2.5rem; font-weight: bold;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 10px;
+        }
+        .coupon-code {
+            font-family: monospace; font-size: 1rem; color: var(--text-primary);
+            background: var(--bg-dark); padding: 10px 15px; border-radius: 8px;
+            margin-bottom: 15px; letter-spacing: 1px; border: 1px dashed var(--border-color);
+        }
+        .coupon-copy {
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white; border: none; padding: 10px 20px; border-radius: 8px;
+            cursor: pointer; font-weight: 600; transition: all 0.3s; width: 100%;
+        }
+        .coupon-copy:hover { transform: scale(1.05); box-shadow: 0 5px 15px rgba(0,210,255,0.3); }
+        footer { text-align: center; padding: 40px 20px; border-top: 1px solid var(--border-color); margin-top: 40px; }
+        footer p { color: var(--text-secondary); margin-bottom: 10px; font-size: 0.9rem; }
+        footer a { color: var(--accent-1); text-decoration: none; }
+        footer a:hover { text-decoration: underline; }
+        @media (max-width: 768px) {
+            h1 { font-size: 1.8rem; }
+            .courses-grid { grid-template-columns: 1fr; }
+            .course-actions { flex-direction: column; }
+            .coupon-grid { grid-template-columns: 1fr 1fr; }
+        }
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .auth-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 40px;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .auth-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .auth-logo h1 {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+        .auth-logo p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-1);
+            box-shadow: 0 0 0 3px rgba(0,210,255,0.1);
+        }
+        .form-group input::placeholder {
+            color: var(--text-secondary);
+        }
+        .password-group {
+            position: relative;
+        }
+        .toggle-pass {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--accent-1);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 5px;
+        }
+        .toggle-pass:hover {
+            color: var(--accent-2);
+        }
+        .auth-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        .auth-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,210,255,0.3);
+        }
+        .auth-error {
+            background: rgba(255,68,68,0.1);
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 15px;
+            text-align: center;
+            display: none;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container" id="authContainer">
+        <div class="auth-card">
+            <div class="auth-logo">
+                <h1>Programming Fundamentals Roadmap</h1>
+                <p>Based on Dr. Mohammed Abu-Hadhoud's 24 Courses</p>
+            </div>
+            <div class="auth-form">
+                <div class="form-group password-group">
+                    <input type="password" id="accessPassword" placeholder="Enter password" onkeypress="if(event.key==='Enter')checkPassword()">
+                    <button class="toggle-pass" onclick="togglePass()" type="button">Show</button>
+                </div>
+                <button class="auth-btn" onclick="checkPassword()">Enter</button>
+            </div>
+            <div class="auth-error" id="authError"></div>
+        </div>
+    </div>
+
+    <div class="main-content" id="mainContent" style="display:none">
+    <header>
+        <h1>Programming Fundamentals Roadmap</h1>
+        <p class="subtitle">Based on Dr. Mohammed Abu-Hadhoud's 24 Courses</p>
+        <div class="stats-bar">
+            <div class="stat-item"><div class="stat-value">24</div><div class="stat-label">Total Courses</div></div>
+            <div class="stat-item"><div class="stat-value" id="totalLessons">0</div><div class="stat-label">Total Lessons</div></div>
+            <div class="stat-item"><div class="stat-value" id="completedLessons">0</div><div class="stat-label">Completed</div></div>
+            <div class="stat-item"><div class="stat-value" id="overallProgress">0%</div><div class="stat-label">Progress</div></div>
+        </div>
+    </header>
+    <div class="container">
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">All Courses</button>
+            <button class="filter-btn" data-filter="free">Free</button>
+            <button class="filter-btn" data-filter="paid">Paid</button>
+            <button class="filter-btn" data-filter="cpp">C++</button>
+            <button class="filter-btn" data-filter="cs">C#</button>
+            <button class="filter-btn" data-filter="sql">SQL</button>
+            <button class="filter-btn" data-filter="algorithms">Algorithms</button>
+            <button class="filter-btn" data-filter="oop">OOP</button>
+            <button class="filter-btn" data-filter="ds">Data Structures</button>
+        </div>
+        <div class="courses-grid" id="coursesGrid"></div>
+        <div style="text-align: center;">
+            <button class="btn btn-reset" onclick="resetProgress()">Reset All Progress</button>
+        </div>
+    </div>
+    <div class="modal-overlay" id="lessonModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+    <section class="coupon-section">
+        <h2>Support &amp; Coupons</h2>
+        <p class="coupon-subtitle">Use these coupon codes to get discounts on courses</p>
+        <div class="coupon-grid">
+            <div class="coupon-card">
+                <div class="coupon-discount">25%</div>
+                <div class="coupon-code">SUPPORT25%</div>
+                <button class="coupon-copy" onclick="copyCoupon('SUPPORT25%', event)">Copy Code</button>
+            </div>
+            <div class="coupon-card">
+                <div class="coupon-discount">50%</div>
+                <div class="coupon-code">SUPPORT50%</div>
+                <button class="coupon-copy" onclick="copyCoupon('SUPPORT50%', event)">Copy Code</button>
+            </div>
+            <div class="coupon-card">
+                <div class="coupon-discount">75%</div>
+                <div class="coupon-code">SUPPORT75%</div>
+                <button class="coupon-copy" onclick="copyCoupon('SUPPORT75%', event)">Copy Code</button>
+            </div>
+            <div class="coupon-card">
+                <div class="coupon-discount">100%</div>
+                <div class="coupon-code">SUPPORT100%</div>
+                <button class="coupon-copy" onclick="copyCoupon('SUPPORT100%', event)">Copy Code</button>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; 2026 Elhendawy. All Rights Reserved.</p>
+        <p>Created with respect to Dr. Mohammed Abu-Hadhoud</p>
+        <p><a href="https://programmingadvices.com" target="_blank">ProgrammingAdvices.com</a> | <a href="https://www.youtube.com/@ProgrammingAdvices" target="_blank">YouTube Channel</a></p>
+    </footer>
+    </div>
+    <script>
+        const courses = [
+            {id:1,title:"Programming Foundations - Level 1",description:"Build a solid understanding of computer science fundamentals, binary systems, and programming concepts.",url:"https://programmingadvices.com/p/00316b",isFree:true,tags:["fundamentals","beginner","free"],category:["cpp","free"],youtube:"https://www.youtube.com/playlist?list=PL3X--QIIK-OHgMV2yBz3GLfM5d_5BxOSj",lessons:[
+                {id:1,name:"Lesson # 1 - From Data to Wisdom: Data, Information, Knowledge, and Wisdom",duration:"15 min"},
+                {id:2,name:"Lesson #2 - Computer, Function, and Components",duration:"18 min"},
+                {id:3,name:"Lesson #03 - The Binary System: How Computers Understand Data",duration:"20 min"},
+                {id:4,name:"Lesson #04 - Computer Speeds and Units",duration:"16 min"},
+                {id:5,name:"Lesson #05 - Hexadecimal System In Computer",duration:"14 min"},
+                {id:6,name:"Lesson #06 - Byte Parts and Its Terminology",duration:"12 min"},
+                {id:7,name:"Lesson #07 - Hexadecimal Part 2",duration:"15 min"},
+                {id:8,name:"Lesson #08 - Octal System In Computer",duration:"13 min"},
+                {id:9,name:"Lesson #09 - Programmers Calculator",duration:"17 min"},
+                {id:10,name:"Lesson #10 - Introduction to Computer Networks - Part 1",duration:"20 min"},
+                {id:11,name:"Lesson #11 - Programming Languages - Part 1",duration:"18 min"},
+                {id:12,name:"Lesson #12 - Programming Languages - Part 2",duration:"16 min"},
+                {id:13,name:"Lesson #13 - Programming Languages - Part 3",duration:"14 min"},
+                {id:14,name:"Lesson #14 - Why You Should Start with C++?",duration:"12 min"},
+                {id:15,name:"Lesson #15 - Operations In Computer",duration:"19 min"},
+                {id:16,name:"Lesson #16 - Variables and Constants",duration:"17 min"},
+                {id:17,name:"Lesson #17 - Operators and Priorities",duration:"22 min"}
+            ]},
+            {id:2,title:"Algorithms & Problem-Solving Level 1",description:"Learn algorithmic thinking, problem-solving techniques, and foundational programming logic.",url:"https://programmingadvices.com/p/00316b1",isFree:true,tags:["algorithms","problem-solving","free"],category:["algorithms","free"],youtube:"https://www.youtube.com/playlist?list=PL3X--QIIK-OEUIwbQU79V76RHelBUQKiz",lessons:[
+                {id:1,name:"What is an Algorithm",duration:"15 min"},
+                {id:2,name:"Problem-Solving Mindset",duration:"18 min"},
+                {id:3,name:"Flowcharts",duration:"20 min"},
+                {id:4,name:"Pseudocode Basics",duration:"16 min"},
+                {id:5,name:"Sequential Thinking",duration:"14 min"},
+                {id:6,name:"Conditional Logic",duration:"17 min"},
+                {id:7,name:"Loop Concepts",duration:"19 min"},
+                {id:8,name:"Algorithm Complexity Intro",duration:"22 min"},
+                {id:9,name:"Practice Problems Set 1",duration:"25 min"}
+            ]},
+            {id:3,title:"Introduction to Programming with C++ - Level 1",description:"Start your C++ programming journey from scratch with hands-on examples.",url:"https://programmingadvices.com/p/00316b11",isFree:true,tags:["C++","programming","free"],category:["cpp","free"],youtube:"https://www.youtube.com/playlist?list=PL3X--QIIK-OFIRbOHbOXbcfSAvw198lUy",lessons:[
+                {id:1,name:"Setting Up Development Environment",duration:"20 min"},
+                {id:2,name:"Your First C++ Program",duration:"15 min"},
+                {id:3,name:"Variables and Data Types",duration:"22 min"},
+                {id:4,name:"Input/Output (cin/cout)",duration:"18 min"},
+                {id:5,name:"Arithmetic Operators",duration:"16 min"},
+                {id:6,name:"Relational Operators",duration:"14 min"},
+                {id:7,name:"If Statements",duration:"17 min"},
+                {id:8,name:"If-Else Statements",duration:"15 min"},
+                {id:9,name:"Nested Conditions",duration:"19 min"},
+                {id:10,name:"While Loops",duration:"18 min"},
+                {id:11,name:"For Loops",duration:"16 min"},
+                {id:12,name:"Switch Statements",duration:"17 min"},
+                {id:13,name:"Functions",duration:"22 min"},
+                {id:14,name:"Arrays",duration:"20 min"},
+                {id:15,name:"Structures",duration:"18 min"}
+            ]},
+            {id:4,title:"Algorithms & Problem-Solving - Level 1 (Solutions)",description:"Complete solutions to 65 algorithmic problems for practice and mastery.",url:"https://programmingadvices.com/p/04-algorithms-problem-solving-level-1-solutions",isFree:false,tags:["algorithms","solutions"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Problem #01 - Simple Sum",duration:"10 min"},
+                {id:2,name:"Problem #02 - Area of Rectangle",duration:"10 min"},
+                {id:3,name:"Problem #03 - Even or Odd",duration:"10 min"},
+                {id:4,name:"Problem #04 - Maximum of Three Numbers",duration:"12 min"},
+                {id:5,name:"Problem #05 - Swap Two Numbers",duration:"10 min"},
+                {id:6,name:"Problem #06 - Simple Calculator",duration:"15 min"},
+                {id:7,name:"Problem #07 - Temperature Converter",duration:"12 min"},
+                {id:8,name:"Problem #08 - Grade Calculator",duration:"14 min"},
+                {id:9,name:"Problem #09 - Multiplication Table",duration:"13 min"},
+                {id:10,name:"Problem #10 - Count Digits",duration:"12 min"},
+                {id:11,name:"Problems #11-#20 Overview",duration:"25 min"},
+                {id:12,name:"Problems #21-#30 Overview",duration:"25 min"},
+                {id:13,name:"Problems #31-#40 Overview",duration:"25 min"},
+                {id:14,name:"Problems #41-#50 Overview",duration:"25 min"},
+                {id:15,name:"Problems #51-#65 Overview",duration:"30 min"}
+            ]},
+            {id:5,title:"Algorithms & Problem-Solving - Level 2",description:"Intermediate algorithmic problems with projects including Rock-Paper-Scissors and Math Quiz.",url:"https://programmingadvices.com/p/00316b1111",isFree:false,tags:["algorithms","intermediate","projects"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Problem #1",duration:"15 min"},
+                {id:2,name:"Problem #2",duration:"15 min"},
+                {id:3,name:"Problem #3",duration:"18 min"},
+                {id:4,name:"Problem #4",duration:"16 min"},
+                {id:5,name:"Problem #5",duration:"17 min"},
+                {id:6,name:"Problem #6",duration:"15 min"},
+                {id:7,name:"Problem #7",duration:"18 min"},
+                {id:8,name:"Problem #8",duration:"16 min"},
+                {id:9,name:"Problem #9",duration:"17 min"},
+                {id:10,name:"Problem #10",duration:"15 min"},
+                {id:11,name:"Problem #11-#20",duration:"40 min"},
+                {id:12,name:"Problem #21-#30",duration:"40 min"},
+                {id:13,name:"Problem #31-#40",duration:"40 min"},
+                {id:14,name:"Problem #41-#50",duration:"40 min"},
+                {id:15,name:"Project 1 - Rock-Paper-Scissors (Requirements)",duration:"20 min"},
+                {id:16,name:"Project 1 - Rock-Paper-Scissors (Solution)",duration:"35 min"},
+                {id:17,name:"Project 2 - Math Quiz Game (Requirements)",duration:"18 min"},
+                {id:18,name:"Project 2 - Math Quiz Game (Solution)",duration:"30 min"}
+            ]},
+            {id:6,title:"Introduction to Programming Using C++ Level 2",description:"Advanced C++ concepts including pointers, recursion, vectors, and memory management.",url:"https://programmingadvices.com/p/introduction-to-programming-using-c-level-2",isFree:false,tags:["C++","advanced","pointers"],category:["cpp"],youtube:"",lessons:[
+                {id:1,name:"Lesson #01 - What is Debugging & Why?",duration:"15 min"},
+                {id:2,name:"Lesson #02 - Breakpoint & Memory Values",duration:"18 min"},
+                {id:3,name:"Lesson #03 - More about Breakpoints",duration:"16 min"},
+                {id:4,name:"Lesson #09 - Ternary Operator: Short Hand IF",duration:"12 min"},
+                {id:5,name:"Lesson #10 - Ranged Loop",duration:"14 min"},
+                {id:6,name:"Lesson #11 - Validate Number",duration:"15 min"},
+                {id:7,name:"Lesson #12 - Bitwise AND operator",duration:"17 min"},
+                {id:8,name:"Lesson #13 - Bitwise OR operator",duration:"16 min"},
+                {id:9,name:"Lesson #14 - Declaration Vs Definition",duration:"13 min"},
+                {id:10,name:"Lesson #15 - Default Parameters",duration:"12 min"},
+                {id:11,name:"Lesson #16 - Function Overloading",duration:"15 min"},
+                {id:12,name:"Lesson #17 - Call Stack/Call Hierarchy",duration:"18 min"},
+                {id:13,name:"Lesson #18 - VS Function Tips",duration:"14 min"},
+                {id:14,name:"Lesson #19 - Recursion",duration:"22 min"},
+                {id:15,name:"Lesson #20 - Static Variables",duration:"15 min"},
+                {id:16,name:"Lesson #21 - Automatic Variables",duration:"13 min"},
+                {id:17,name:"Lesson #22 - Register Variable",duration:"12 min"},
+                {id:18,name:"Lesson #23 - Integer Format (printf)",duration:"16 min"},
+                {id:19,name:"Lesson #24 - Float Format (printf)",duration:"14 min"},
+                {id:20,name:"Lesson #25 - String and Char Format (printf)",duration:"15 min"},
+                {id:21,name:"Lesson #26 - Setw Manipulator",duration:"12 min"},
+                {id:22,name:"Lesson #27 - Two Dimensional Arrays",duration:"20 min"},
+                {id:23,name:"Lesson #28 - Vectors Introduction",duration:"16 min"},
+                {id:24,name:"Lesson #29 - Vector Add Elements",duration:"15 min"},
+                {id:25,name:"Lesson #30 - Vector of Structure",duration:"17 min"},
+                {id:26,name:"Lesson #31 - Vector Remove Elements",duration:"14 min"},
+                {id:27,name:"Lesson #32 - Vector Functions",duration:"18 min"},
+                {id:28,name:"Lesson #33 - Call ByRef/ByVal",duration:"16 min"},
+                {id:29,name:"Lesson #34 - Creating References",duration:"14 min"},
+                {id:30,name:"Lesson #35 - What is Pointer?",duration:"20 min"},
+                {id:31,name:"Lesson #36 - Dereferencing Pointer",duration:"18 min"},
+                {id:32,name:"Lesson #37 - Common Mistakes with Pointers",duration:"15 min"},
+                {id:33,name:"Lesson #38 - Pointers vs References",duration:"16 min"},
+                {id:34,name:"Lesson #39 - Call by Reference Using Pointers",duration:"18 min"},
+                {id:35,name:"Lesson #40 - Pointers and Arrays",duration:"17 min"},
+                {id:36,name:"Lesson #41 - Pointers and Structure",duration:"15 min"},
+                {id:37,name:"Lesson #42 - Pointer to Void",duration:"13 min"},
+                {id:38,name:"Lesson #43 - Memory Management: new and delete",duration:"20 min"},
+                {id:39,name:"Lesson #44 - Dynamic Arrays: new and delete",duration:"18 min"}
+            ]},
+            {id:7,title:"Algorithms & Problem Solving Level 3",description:"Advanced algorithmic problems including Two Sum, Valid Parentheses, and more.",url:"https://programmingadvices.com/p/07-algorithms-problem-solving-level-3",isFree:false,tags:["algorithms","advanced","leetcode"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Problem #1 - Two Sum",duration:"18 min"},
+                {id:2,name:"Problem #2 - Reverse String",duration:"12 min"},
+                {id:3,name:"Problem #3 - Valid Parentheses",duration:"16 min"},
+                {id:4,name:"Problem #4 - Merge Sorted Arrays",duration:"20 min"},
+                {id:5,name:"Problem #5 - Maximum Subarray",duration:"22 min"},
+                {id:6,name:"Problem #6 - Climbing Stairs",duration:"15 min"},
+                {id:7,name:"Problem #7 - Best Time to Buy Stock",duration:"18 min"},
+                {id:8,name:"Problem #8 - Contains Duplicate",duration:"12 min"},
+                {id:9,name:"Problem #9 - Valid Anagram",duration:"14 min"},
+                {id:10,name:"Problem #10 - Binary Search",duration:"17 min"},
+                {id:11,name:"Problems #11-#20",duration:"45 min"},
+                {id:12,name:"Problems #21-#30",duration:"45 min"},
+                {id:13,name:"Project - Mini Calculator",duration:"30 min"},
+                {id:14,name:"Project - Student Management",duration:"35 min"}
+            ]},
+            {id:8,title:"Algorithms & Problem Solving Level 4",description:"Complex algorithmic challenges with Bank Extension and ATM System projects.",url:"https://programmingadvices.com/p/08-algorithms-problem-solving-level-4",isFree:false,tags:["algorithms","advanced","projects"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Problem #01",duration:"18 min"},
+                {id:2,name:"Problem #02",duration:"18 min"},
+                {id:3,name:"Problem #03",duration:"20 min"},
+                {id:4,name:"Problem #04",duration:"18 min"},
+                {id:5,name:"Problem #05",duration:"20 min"},
+                {id:6,name:"Problem #06",duration:"18 min"},
+                {id:7,name:"Problem #07",duration:"20 min"},
+                {id:8,name:"Problem #08",duration:"18 min"},
+                {id:9,name:"Problem #09",duration:"20 min"},
+                {id:10,name:"Problem #10",duration:"18 min"},
+                {id:11,name:"Problems #11-#20",duration:"50 min"},
+                {id:12,name:"Problems #21-#30",duration:"50 min"},
+                {id:13,name:"Problems #31-#40",duration:"50 min"},
+                {id:14,name:"Problems #41-#50",duration:"50 min"},
+                {id:15,name:"Problems #51-#65",duration:"55 min"},
+                {id:16,name:"Project 1 - Bank Extension (Requirements)",duration:"20 min"},
+                {id:17,name:"Project 1 - Bank Extension (Solution)",duration:"40 min"},
+                {id:18,name:"Project 2 - ATM System (Requirements)",duration:"22 min"},
+                {id:19,name:"Project 2 - ATM System (Solution)",duration:"45 min"}
+            ]},
+            {id:9,title:"Foundations Level 2",description:"Essential IT foundations including networking, OS concepts, Linux, and software development practices.",url:"https://programmingadvices.com/p/foundations-level-2",isFree:false,tags:["networking","linux","fundamentals"],category:["fundamentals"],youtube:"",lessons:[
+                {id:1,name:"OSI Model Part 1",duration:"20 min"},
+                {id:2,name:"OSI Model Part 2",duration:"22 min"},
+                {id:3,name:"TCP/IP Protocol Suite",duration:"25 min"},
+                {id:4,name:"IP Addressing and Subnetting",duration:"28 min"},
+                {id:5,name:"DNS Explained",duration:"18 min"},
+                {id:6,name:"HTTP and HTTPS",duration:"15 min"},
+                {id:7,name:"How the Internet Works",duration:"20 min"},
+                {id:8,name:"Client-Server Architecture",duration:"18 min"},
+                {id:9,name:"Network Devices",duration:"16 min"},
+                {id:10,name:"Wireless Networks",duration:"14 min"},
+                {id:11,name:"Network Security Basics",duration:"20 min"},
+                {id:12,name:"Firewalls and VPNs",duration:"18 min"},
+                {id:13,name:"Cloud Computing Introduction",duration:"22 min"},
+                {id:14,name:"Virtualization Basics",duration:"16 min"},
+                {id:15,name:"Operating System Concepts",duration:"20 min"},
+                {id:16,name:"Process Management",duration:"18 min"},
+                {id:17,name:"Memory Management",duration:"20 min"},
+                {id:18,name:"File Systems",duration:"16 min"},
+                {id:19,name:"I/O Systems",duration:"14 min"},
+                {id:20,name:"Linux Basics",duration:"22 min"},
+                {id:21,name:"Command Line Interface",duration:"20 min"},
+                {id:22,name:"Shell Scripting Intro",duration:"25 min"},
+                {id:23,name:"Version Control with Git",duration:"22 min"},
+                {id:24,name:"Software Development Life Cycle",duration:"18 min"},
+                {id:25,name:"Agile Methodology",duration:"20 min"},
+                {id:26,name:"Scrum Framework",duration:"18 min"}
+            ]},
+            {id:10,title:"OOP as it Should Be (Concepts)",description:"Master Object-OOP concepts with practical projects like Calculator, String Library, and Date Library.",url:"https://programmingadvices.com/p/oop-as-it-should-be-concepts",isFree:false,tags:["OOP","C++","concepts"],category:["cpp","oop"],youtube:"",lessons:[
+                {id:1,name:"What is OOP and Why OOP",duration:"18 min"},
+                {id:2,name:"Classes and Objects",duration:"22 min"},
+                {id:3,name:"Access Specifiers (public, private, protected)",duration:"16 min"},
+                {id:4,name:"Constructors and Destructors",duration:"20 min"},
+                {id:5,name:"Copy Constructor",duration:"18 min"},
+                {id:6,name:"Setters and Getters",duration:"14 min"},
+                {id:7,name:"Static Members",duration:"16 min"},
+                {id:8,name:"Constructor Overloading",duration:"15 min"},
+                {id:9,name:"Inheritance Basics",duration:"22 min"},
+                {id:10,name:"Types of Inheritance",duration:"18 min"},
+                {id:11,name:"Polymorphism Overview",duration:"20 min"},
+                {id:12,name:"Function Overriding",duration:"16 min"},
+                {id:13,name:"Virtual Functions",duration:"18 min"},
+                {id:14,name:"Abstract Classes and Pure Virtual Functions",duration:"20 min"},
+                {id:15,name:"Multiple Inheritance",duration:"17 min"},
+                {id:16,name:"Diamond Problem",duration:"15 min"},
+                {id:17,name:"Operator Overloading",duration:"22 min"},
+                {id:18,name:"Friend Functions",duration:"14 min"},
+                {id:19,name:"Templates Introduction",duration:"18 min"},
+                {id:20,name:"Calculator Project",duration:"25 min"},
+                {id:21,name:"String Library Project",duration:"30 min"},
+                {id:22,name:"Date Library Project",duration:"35 min"}
+            ]},
+            {id:11,title:"OOP as it Should Be (Applications)",description:"Apply OOP principles in real-world projects including Bank System and Currency Exchange.",url:"https://programmingadvices.com/p/11-oop-as-it-should-be-applications",isFree:false,tags:["OOP","C++","projects"],category:["cpp","oop"],youtube:"",lessons:[
+                {id:1,name:"Utility Library Project - Introduction",duration:"15 min"},
+                {id:2,name:"Utility Library - String Utils",duration:"25 min"},
+                {id:3,name:"Utility Library - Date Utils",duration:"28 min"},
+                {id:4,name:"Input/Validation Library - Introduction",duration:"14 min"},
+                {id:5,name:"Input/Validation Library - Read Functions",duration:"22 min"},
+                {id:6,name:"Input/Validation Library - Validate Functions",duration:"25 min"},
+                {id:7,name:"Bank System Project - Introduction",duration:"16 min"},
+                {id:8,name:"Bank System - Client Class",duration:"30 min"},
+                {id:9,name:"Bank System - User Class",duration:"28 min"},
+                {id:10,name:"Bank System - Transaction Class",duration:"32 min"},
+                {id:11,name:"Bank System - Login System",duration:"25 min"},
+                {id:12,name:"Bank System - Main Menu",duration:"22 min"},
+                {id:13,name:"Bank System - Deposit/Withdraw",duration:"28 min"},
+                {id:14,name:"Bank System - Transfer",duration:"25 min"},
+                {id:15,name:"Bank System - Reports",duration:"22 min"},
+                {id:16,name:"Bank System - Permissions",duration:"20 min"},
+                {id:17,name:"Bank System - File Operations",duration:"28 min"},
+                {id:18,name:"Currency Exchange Project - Introduction",duration:"15 min"},
+                {id:19,name:"Currency Exchange - Currency Class",duration:"25 min"},
+                {id:20,name:"Currency Exchange - Screen Design",duration:"20 min"},
+                {id:21,name:"Currency Exchange - Find Currency",duration:"18 min"},
+                {id:22,name:"Currency Exchange - Update Rate",duration:"20 min"},
+                {id:23,name:"Currency Exchange - List Currencies",duration:"18 min"},
+                {id:24,name:"Template Functions",duration:"22 min"},
+                {id:25,name:"Template Classes",duration:"25 min"}
+            ]},
+            {id:12,title:"Data Structures - Level 1",description:"Learn fundamental data structures including Arrays, Stacks, Queues, and Linked Lists.",url:"https://programmingadvices.com/p/12-data-structures-level1",isFree:false,tags:["data-structures","C++","fundamentals"],category:["ds","cpp"],youtube:"",lessons:[
+                {id:1,name:"What is Data Structure",duration:"15 min"},
+                {id:2,name:"Binary System Review",duration:"18 min"},
+                {id:3,name:"Array - Declaration and Initialization",duration:"16 min"},
+                {id:4,name:"Array - Operations",duration:"20 min"},
+                {id:5,name:"Array - Problems",duration:"22 min"},
+                {id:6,name:"Matrix - Declaration",duration:"14 min"},
+                {id:7,name:"Matrix - Operations",duration:"18 min"},
+                {id:8,name:"Stack - Implementation",duration:"22 min"},
+                {id:9,name:"Stack - Problems",duration:"20 min"},
+                {id:10,name:"Vector - Introduction",duration:"16 min"},
+                {id:11,name:"Vector - Operations",duration:"18 min"},
+                {id:12,name:"Queue - Implementation",duration:"20 min"},
+                {id:13,name:"Queue - Problems",duration:"18 min"},
+                {id:14,name:"Singly Linked List - Node",duration:"15 min"},
+                {id:15,name:"Singly Linked List - Insert",duration:"18 min"},
+                {id:16,name:"Singly Linked List - Delete",duration:"18 min"},
+                {id:17,name:"Singly Linked List - Search",duration:"14 min"},
+                {id:18,name:"Singly Linked List - Reverse",duration:"16 min"},
+                {id:19,name:"Doubly Linked List - Implementation",duration:"22 min"},
+                {id:20,name:"Doubly Linked List - Operations",duration:"20 min"},
+                {id:21,name:"Circular Linked List - Implementation",duration:"20 min"},
+                {id:22,name:"Abstract Data Type Concept",duration:"15 min"}
+            ]},
+            {id:13,title:"Algorithms & Problem Solving Level 5",description:"Complex projects with requirements, solutions, and extensions to build real-world applications.",url:"https://programmingadvices.com/p/13-algorithms-problem-solving-level-5",isFree:false,tags:["algorithms","projects","advanced"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Project #1 - Requirements",duration:"20 min"},
+                {id:2,name:"Project #1 - Solution",duration:"40 min"},
+                {id:3,name:"Project #1 - Extensions",duration:"25 min"},
+                {id:4,name:"Project #2 - Requirements",duration:"20 min"},
+                {id:5,name:"Project #2 - Solution",duration:"40 min"},
+                {id:6,name:"Project #2 - Extensions",duration:"25 min"},
+                {id:7,name:"Project #3 - Requirements",duration:"20 min"},
+                {id:8,name:"Project #3 - Solution",duration:"45 min"},
+                {id:9,name:"Project #3 - Extensions",duration:"25 min"},
+                {id:10,name:"Project #4 - Requirements",duration:"20 min"},
+                {id:11,name:"Project #4 - Solution",duration:"45 min"},
+                {id:12,name:"Project #4 - Extensions",duration:"25 min"},
+                {id:13,name:"Project #5 - Requirements",duration:"20 min"},
+                {id:14,name:"Project #5 - Solution",duration:"50 min"},
+                {id:15,name:"Project #5 - Extensions",duration:"25 min"},
+                {id:16,name:"Project #6 - Requirements",duration:"20 min"},
+                {id:17,name:"Project #6 - Solution",duration:"50 min"},
+                {id:18,name:"Project #6 - Extensions",duration:"25 min"},
+                {id:19,name:"Project #7 - Requirements",duration:"22 min"},
+                {id:20,name:"Project #7 - Solution",duration:"55 min"},
+                {id:21,name:"Project #8 - Requirements",duration:"22 min"},
+                {id:22,name:"Project #8 - Solution",duration:"55 min"}
+            ]},
+            {id:14,title:"C# - Level 1",description:"Learn C# programming from basics to building Windows Forms applications.",url:"https://programmingadvices.com/p/14-c-level-1",isFree:false,tags:["C#","beginner","windows-forms"],category:["cs"],youtube:"",lessons:[
+                {id:1,name:".NET Framework Overview",duration:"18 min"},
+                {id:2,name:"C# Syntax Basics",duration:"16 min"},
+                {id:3,name:"Variables and Data Types",duration:"20 min"},
+                {id:4,name:"Operators",duration:"15 min"},
+                {id:5,name:"Console Input/Output",duration:"14 min"},
+                {id:6,name:"If/Else Statements",duration:"16 min"},
+                {id:7,name:"Switch Statements",duration:"15 min"},
+                {id:8,name:"While Loops",duration:"14 min"},
+                {id:9,name:"For Loops",duration:"13 min"},
+                {id:10,name:"Do-While Loops",duration:"12 min"},
+                {id:11,name:"Methods in C#",duration:"18 min"},
+                {id:12,name:"Methods Overloading",duration:"15 min"},
+                {id:13,name:"Arrays in C#",duration:"16 min"},
+                {id:14,name:"Strings in C#",duration:"18 min"},
+                {id:15,name:"Structures in C#",duration:"14 min"},
+                {id:16,name:"Enums in C#",duration:"12 min"},
+                {id:17,name:"Exceptions - Try/Catch",duration:"16 min"},
+                {id:18,name:"Exceptions - Finally",duration:"12 min"},
+                {id:19,name:"Windows Forms Introduction",duration:"20 min"},
+                {id:20,name:"Buttons and Labels",duration:"14 min"},
+                {id:21,name:"TextBox and RichTextBox",duration:"15 min"},
+                {id:22,name:"CheckBox and Radio Button",duration:"14 min"},
+                {id:23,name:"ComboBox and ListBox",duration:"16 min"},
+                {id:24,name:"PictureBox",duration:"12 min"},
+                {id:25,name:"Message Box",duration:"10 min"},
+                {id:26,name:"Open File Dialog",duration:"12 min"},
+                {id:27,name:"Save File Dialog",duration:"12 min"},
+                {id:28,name:"Font Dialog",duration:"10 min"},
+                {id:29,name:"Color Dialog",duration:"10 min"},
+                {id:30,name:"Folder Browser Dialog",duration:"10 min"},
+                {id:31,name:"Tic-Tac-Toe Project",duration:"35 min"},
+                {id:32,name:"Pizza Project",duration:"30 min"},
+                {id:33,name:"MDI Forms",duration:"20 min"}
+            ]},
+            {id:15,title:"Database Level 1 - SQL (Concepts and Practice)",description:"Master SQL fundamentals from database design to complex queries and normalization.",url:"https://programmingadvices.com/p/15-database-level1",isFree:false,tags:["SQL","database","fundamentals"],category:["sql"],youtube:"",lessons:[
+                {id:1,name:"What is Database",duration:"15 min"},
+                {id:2,name:"DBMS vs RDBMS",duration:"14 min"},
+                {id:3,name:"NULL Concept",duration:"12 min"},
+                {id:4,name:"Primary Key and Foreign Key",duration:"18 min"},
+                {id:5,name:"Data Redundancy",duration:"12 min"},
+                {id:6,name:"Data Integrity",duration:"14 min"},
+                {id:7,name:"Constraints",duration:"16 min"},
+                {id:8,name:"SQL Overview",duration:"15 min"},
+                {id:9,name:"CREATE DATABASE",duration:"10 min"},
+                {id:10,name:"CREATE TABLE",duration:"14 min"},
+                {id:11,name:"INSERT INTO",duration:"12 min"},
+                {id:12,name:"SELECT Statement",duration:"16 min"},
+                {id:13,name:"WHERE Clause",duration:"14 min"},
+                {id:14,name:"UPDATE Statement",duration:"12 min"},
+                {id:15,name:"DELETE Statement",duration:"10 min"},
+                {id:16,name:"ALTER TABLE",duration:"14 min"},
+                {id:17,name:"DROP TABLE",duration:"10 min"},
+                {id:18,name:"SELECT INTO",duration:"12 min"},
+                {id:19,name:"INNER JOIN",duration:"18 min"},
+                {id:20,name:"LEFT JOIN",duration:"15 min"},
+                {id:21,name:"RIGHT JOIN",duration:"14 min"},
+                {id:22,name:"Full Outer Join",duration:"14 min"},
+                {id:23,name:"Self Join",duration:"14 min"},
+                {id:24,name:"Aggregate Functions (COUNT, SUM, AVG)",duration:"16 min"},
+                {id:25,name:"GROUP BY",duration:"14 min"},
+                {id:26,name:"HAVING",duration:"12 min"},
+                {id:27,name:"ORDER BY",duration:"10 min"},
+                {id:28,name:"TOP",duration:"10 min"},
+                {id:29,name:"DISTINCT",duration:"10 min"},
+                {id:30,name:"LIKE Operator",duration:"12 min"},
+                {id:31,name:"IN Operator",duration:"10 min"},
+                {id:32,name:"BETWEEN Operator",duration:"10 min"},
+                {id:33,name:"Aliases",duration:"10 min"},
+                {id:34,name:"Subqueries",duration:"18 min"},
+                {id:35,name:"Normalization 1NF",duration:"16 min"},
+                {id:36,name:"Normalization 2NF",duration:"16 min"},
+                {id:37,name:"Normalization 3NF",duration:"16 min"},
+                {id:38,name:"Backup Database",duration:"12 min"},
+                {id:39,name:"Restore Database",duration:"12 min"}
+            ]},
+            {id:16,title:"OOP As It Should Be In C#",description:"Apply OOP principles in C# with properties, inheritance, polymorphism, and more.",url:"https://programmingadvices.com/p/16-oop-in-c",isFree:false,tags:["OOP","C#","advanced"],category:["cs","oop"],youtube:"",lessons:[
+                {id:1,name:"Classes in C#",duration:"18 min"},
+                {id:2,name:"Properties",duration:"16 min"},
+                {id:3,name:"Constructors",duration:"18 min"},
+                {id:4,name:"Access Modifiers",duration:"14 min"},
+                {id:5,name:"Static Keyword",duration:"15 min"},
+                {id:6,name:"Inheritance in C#",duration:"20 min"},
+                {id:7,name:"Base and Derived Classes",duration:"18 min"},
+                {id:8,name:"Method Overriding",duration:"16 min"},
+                {id:9,name:"Polymorphism in C#",duration:"20 min"},
+                {id:10,name:"Abstract Classes",duration:"18 min"},
+                {id:11,name:"Interfaces",duration:"20 min"},
+                {id:12,name:"Sealed Classes",duration:"12 min"},
+                {id:13,name:"Nested Classes",duration:"14 min"},
+                {id:14,name:"Operator Overloading",duration:"18 min"},
+                {id:15,name:"Indexer",duration:"15 min"},
+                {id:16,name:"Events",duration:"18 min"},
+                {id:17,name:"Delegates",duration:"18 min"},
+                {id:18,name:"Calculator Project",duration:"30 min"}
+            ]},
+            {id:17,title:"Database - SQL (Projects & Practice)",description:"Advanced SQL topics with stored procedures, views, triggers, and practice projects.",url:"https://programmingadvices.com/p/17-db-sql-projects-practice",isFree:false,tags:["SQL","database","projects"],category:["sql"],youtube:"",lessons:[
+                {id:1,name:"Database Design Principles",duration:"18 min"},
+                {id:2,name:"ER Diagrams",duration:"22 min"},
+                {id:3,name:"Normalization Review",duration:"16 min"},
+                {id:4,name:"Complex SELECT Queries",duration:"25 min"},
+                {id:5,name:"Multiple JOINs",duration:"22 min"},
+                {id:6,name:"Stored Procedures",duration:"20 min"},
+                {id:7,name:"Stored Procedures with Parameters",duration:"18 min"},
+                {id:8,name:"Views",duration:"16 min"},
+                {id:9,name:"Indexes",duration:"18 min"},
+                {id:10,name:"Triggers",duration:"20 min"},
+                {id:11,name:"Transactions",duration:"18 min"},
+                {id:12,name:"Practice Project - Company DB",duration:"40 min"},
+                {id:13,name:"Practice Project - School DB",duration:"35 min"},
+                {id:14,name:"Practice Project - Hospital DB",duration:"40 min"}
+            ]},
+            {id:18,title:"C# & Database Connectivity (ADO.NET)",description:"Connect C# applications to databases using ADO.NET for data-driven applications.",url:"https://programmingadvices.com/p/18-c-database-connectivity-ado-net",isFree:false,tags:["C#","database","ADO.NET"],category:["cs","sql"],youtube:"",lessons:[
+                {id:1,name:"ADO.NET Introduction",duration:"18 min"},
+                {id:2,name:"Connection Object",duration:"16 min"},
+                {id:3,name:"Command Object",duration:"18 min"},
+                {id:4,name:"DataReader",duration:"20 min"},
+                {id:5,name:"SqlDataAdapter",duration:"18 min"},
+                {id:6,name:"DataTable",duration:"16 min"},
+                {id:7,name:"DataSet",duration:"18 min"},
+                {id:8,name:"DataView",duration:"14 min"},
+                {id:9,name:"Parameterized Queries",duration:"16 min"},
+                {id:10,name:"CRUD Operations",duration:"25 min"},
+                {id:11,name:"Error Handling",duration:"15 min"},
+                {id:12,name:"Connection Pooling",duration:"14 min"}
+            ]},
+            {id:19,title:"Full Real Project - DVLD",description:"Build a complete Driver Vehicle License Department system with all modules.",url:"https://programmingadvices.com/p/19-full-real-project-dvld",isFree:false,tags:["C#","project","real-world"],category:["cs"],youtube:"",lessons:[
+                {id:1,name:"Project Requirements",duration:"20 min"},
+                {id:2,name:"Database Design",duration:"25 min"},
+                {id:3,name:"Data Access Layer",duration:"35 min"},
+                {id:4,name:"Business Logic Layer",duration:"30 min"},
+                {id:5,name:"People Module",duration:"35 min"},
+                {id:6,name:"Licenses Module",duration:"40 min"},
+                {id:7,name:"Applications Module",duration:"35 min"},
+                {id:8,name:"Tests Module",duration:"30 min"},
+                {id:9,name:"Users Module",duration:"25 min"},
+                {id:10,name:"Login Screen",duration:"20 min"},
+                {id:11,name:"Main Menu",duration:"22 min"},
+                {id:12,name:"Error Handling",duration:"18 min"},
+                {id:13,name:"Permissions System",duration:"22 min"},
+                {id:14,name:"Reports",duration:"25 min"}
+            ]},
+            {id:20,title:"C# Programming Level 2",description:"Advanced C# features including Generics, LINQ, Multi-threading, and Async/Await.",url:"https://programmingadvices.com/p/20-c-level2",isFree:false,tags:["C#","advanced","LINQ"],category:["cs"],youtube:"",lessons:[
+                {id:1,name:"Generics",duration:"18 min"},
+                {id:2,name:"Generic Classes",duration:"16 min"},
+                {id:3,name:"Generic Methods",duration:"14 min"},
+                {id:4,name:"Delegates",duration:"18 min"},
+                {id:5,name:"Func and Action",duration:"15 min"},
+                {id:6,name:"Lambda Expressions",duration:"16 min"},
+                {id:7,name:"Events",duration:"18 min"},
+                {id:8,name:"LINQ Basics",duration:"22 min"},
+                {id:9,name:"LINQ Queries",duration:"25 min"},
+                {id:10,name:"Exception Handling",duration:"16 min"},
+                {id:11,name:"Custom Exceptions",duration:"14 min"},
+                {id:12,name:"File Handling",duration:"18 min"},
+                {id:13,name:"StreamReader/StreamWriter",duration:"16 min"},
+                {id:14,name:"BinaryFormatter",duration:"15 min"},
+                {id:15,name:"Multi-threading",duration:"20 min"},
+                {id:16,name:"Thread Class",duration:"16 min"},
+                {id:17,name:"ThreadPool",duration:"14 min"},
+                {id:18,name:"Async/Await",duration:"20 min"},
+                {id:19,name:"Task Parallel Library",duration:"18 min"}
+            ]},
+            {id:21,title:"Database Level 2 - Concepts & T-SQL",description:"Advanced SQL with T-SQL programming, window functions, and execution plans.",url:"https://programmingadvices.com/p/21-db-level2-t-sql",isFree:false,tags:["SQL","T-SQL","advanced"],category:["sql"],youtube:"",lessons:[
+                {id:1,name:"T-SQL Fundamentals",duration:"18 min"},
+                {id:2,name:"Variables in T-SQL",duration:"14 min"},
+                {id:3,name:"IF Statement",duration:"12 min"},
+                {id:4,name:"CASE Statement",duration:"16 min"},
+                {id:5,name:"WHILE Loop",duration:"14 min"},
+                {id:6,name:"Cursors",duration:"18 min"},
+                {id:7,name:"CTE (Common Table Expressions)",duration:"20 min"},
+                {id:8,name:"Recursive CTE",duration:"22 min"},
+                {id:9,name:"Stored Procedures",duration:"18 min"},
+                {id:10,name:"Scalar Functions",duration:"14 min"},
+                {id:11,name:"Table-Valued Functions",duration:"16 min"},
+                {id:12,name:"Window Functions",duration:"22 min"},
+                {id:13,name:"OFFSET/FETCH",duration:"12 min"},
+                {id:14,name:"Triggers",duration:"18 min"},
+                {id:15,name:"Dynamic SQL",duration:"16 min"},
+                {id:16,name:"Indexing",duration:"20 min"},
+                {id:17,name:"Execution Plans",duration:"18 min"}
+            ]},
+            {id:22,title:"Data Structures Level 2 in C#",description:"Advanced data structures including Trees, Heaps, and Collections in C#.",url:"https://programmingadvices.com/p/22-ds-l2",isFree:false,tags:["data-structures","C#","advanced"],category:["ds","cs"],youtube:"",lessons:[
+                {id:1,name:"List<T>",duration:"16 min"},
+                {id:2,name:"ArrayList",duration:"14 min"},
+                {id:3,name:"Dictionary<K,V>",duration:"18 min"},
+                {id:4,name:"HashSet<T>",duration:"14 min"},
+                {id:5,name:"Hashtable",duration:"14 min"},
+                {id:6,name:"SortedList",duration:"12 min"},
+                {id:7,name:"LinkedList<T>",duration:"16 min"},
+                {id:8,name:"BitArray",duration:"12 min"},
+                {id:9,name:"Stack<T>",duration:"14 min"},
+                {id:10,name:"Queue<T>",duration:"14 min"},
+                {id:11,name:"Binary Search Tree",duration:"22 min"},
+                {id:12,name:"BST Operations",duration:"25 min"},
+                {id:13,name:"AVL Tree",duration:"28 min"},
+                {id:14,name:"AVL Rotations",duration:"25 min"},
+                {id:15,name:"Red-Black Tree",duration:"28 min"},
+                {id:16,name:"Priority Queue",duration:"18 min"},
+                {id:17,name:"Min Heap",duration:"16 min"},
+                {id:18,name:"Max Heap",duration:"16 min"}
+            ]},
+            {id:23,title:"Algorithms Level 6",description:"Master sorting, searching, graph algorithms, and dynamic programming.",url:"https://programmingadvices.com/p/23-algorithms-level6",isFree:false,tags:["algorithms","sorting","graph"],category:["algorithms"],youtube:"",lessons:[
+                {id:1,name:"Linear Search",duration:"12 min"},
+                {id:2,name:"Binary Search",duration:"16 min"},
+                {id:3,name:"Bubble Sort",duration:"18 min"},
+                {id:4,name:"Selection Sort",duration:"16 min"},
+                {id:5,name:"Insertion Sort",duration:"16 min"},
+                {id:6,name:"Merge Sort",duration:"22 min"},
+                {id:7,name:"Quick Sort",duration:"24 min"},
+                {id:8,name:"Tree Traversal - BFS",duration:"18 min"},
+                {id:9,name:"Tree Traversal - DFS",duration:"18 min"},
+                {id:10,name:"BST Search",duration:"16 min"},
+                {id:11,name:"AVL Tree Algorithms",duration:"22 min"},
+                {id:12,name:"Red-Black Tree Algorithms",duration:"22 min"},
+                {id:13,name:"Graph BFS",duration:"20 min"},
+                {id:14,name:"Graph DFS",duration:"20 min"},
+                {id:15,name:"Dijkstra Algorithm",duration:"25 min"},
+                {id:16,name:"Greedy Algorithms",duration:"22 min"},
+                {id:17,name:"Dynamic Programming Intro",duration:"24 min"},
+                {id:18,name:"Knapsack Problem",duration:"22 min"}
+            ]},
+            {id:24,title:"Windows Services",description:"Learn to build and manage Windows Services for background processing.",url:"https://programmingadvices.com/p/24-windowsservices",isFree:false,tags:["C#","windows-services","advanced"],category:["cs"],youtube:"",lessons:[
+                {id:1,name:"What are Windows Services",duration:"18 min"},
+                {id:2,name:"Creating Windows Service Project",duration:"20 min"},
+                {id:3,name:"Service Base Class",duration:"16 min"},
+                {id:4,name:"Service Lifecycle",duration:"18 min"},
+                {id:5,name:"OnStart Method",duration:"14 min"},
+                {id:6,name:"OnStop Method",duration:"12 min"},
+                {id:7,name:"OnPause Method",duration:"12 min"},
+                {id:8,name:"Service Installer",duration:"18 min"},
+                {id:9,name:"Service Controller",duration:"16 min"},
+                {id:10,name:"Debugging Services",duration:"20 min"},
+                {id:11,name:"Windows Service Timer",duration:"16 min"},
+                {id:12,name:"Background Worker",duration:"18 min"},
+                {id:13,name:"Real-World Patterns",duration:"22 min"},
+                {id:14,name:"Install and Configure",duration:"18 min"}
+            ]}
+        ];
+        let progress = {};
+
+        function getProgress() {
+            const saved = localStorage.getItem('roadmapProgress');
+            return saved ? JSON.parse(saved) : {};
+        }
+
+        function saveProgress() {
+            localStorage.setItem('roadmapProgress', JSON.stringify(progress));
+        }
+
+        function toggleLesson(courseId, lessonId, event) {
+            var key = courseId + '-' + lessonId;
+            if (progress[key]) {
+                delete progress[key];
+            } else {
+                progress[key] = true;
+            }
+            saveProgress();
+            renderAll();
+        }
+
+        function toggleLessonFromModal(courseId, lessonId) {
+            var key = courseId + '-' + lessonId;
+            if (progress[key]) {
+                delete progress[key];
+            } else {
+                progress[key] = true;
+            }
+            saveProgress();
+            var modalBody = document.getElementById('modalBody');
+            var scrollTop = modalBody.scrollTop;
+            renderAll();
+            openCourseModal(courseId);
+            document.getElementById('modalBody').scrollTop = scrollTop;
+        }
+
+        function getCourseProgress(courseId) {
+            var course = courses.find(function(c) { return c.id === courseId; });
+            if (!course) return {completed: 0, total: 0, percent: 0};
+            var completed = course.lessons.filter(function(l) { return progress[courseId + '-' + l.id]; }).length;
+            var total = course.lessons.length;
+            var percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+            return {completed: completed, total: total, percent: percent};
+        }
+
+        function getOverallStats() {
+            var totalLessons = 0;
+            var completedLessons = 0;
+            courses.forEach(function(course) {
+                totalLessons += course.lessons.length;
+                course.lessons.forEach(function(lesson) {
+                    if (progress[course.id + '-' + lesson.id]) {
+                        completedLessons++;
+                    }
+                });
+            });
+            var percent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+            return {totalLessons: totalLessons, completedLessons: completedLessons, percent: percent};
+        }
+
+        function openCourseModal(courseId) {
+            var course = courses.find(function(c) { return c.id === courseId; });
+            if (!course) return;
+            document.getElementById('modalTitle').textContent = course.title;
+
+            var prog = getCourseProgress(courseId);
+            var barColor = prog.percent === 100 ? 'background: linear-gradient(90deg, var(--success), #20c997);' : '';
+            var html = '<div class="modal-progress">' +
+                '<div class="modal-progress-text">' + prog.completed + '/' + prog.total + ' lessons completed (' + prog.percent + '%)</div>' +
+                '<div class="progress-bar"><div class="progress-fill" style="width: ' + prog.percent + '%; ' + barColor + '"></div></div>' +
+                '</div>';
+
+            course.lessons.forEach(function(lesson, index) {
+                var isCompleted = progress[courseId + '-' + lesson.id];
+                html += '<div class="modal-lesson">' +
+                    '<span class="modal-lesson-num">' + (index + 1) + '</span>' +
+                    '<div class="lesson-status ' + (isCompleted ? 'completed' : '') + '" onclick="toggleLessonFromModal(' + courseId + ', ' + lesson.id + ')"></div>' +
+                    '<div class="modal-lesson-info">' +
+                    '<div class="modal-lesson-name">' + lesson.name + '</div>' +
+                    '<div class="modal-lesson-duration">' + lesson.duration + '</div>' +
+                    '</div></div>';
+            });
+            document.getElementById('modalBody').innerHTML = html;
+            document.getElementById('lessonModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('lessonModal').classList.remove('active');
+        }
+
+        function filterCourses(filter) {
+            document.querySelectorAll('.filter-btn').forEach(function(btn) { btn.classList.remove('active'); });
+            document.querySelector('[data-filter="' + filter + '"]').classList.add('active');
+            renderAll(filter);
+        }
+
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                progress = {};
+                saveProgress();
+                renderAll();
+            }
+        }
+
+        function goToCourse(url) {
+            window.open(url, '_blank');
+        }
+
+        function copyCoupon(code, evt) {
+            var btn = evt.target;
+            navigator.clipboard.writeText(code).then(function() {
+                var originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--success)';
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            }).catch(function() {
+                var input = document.createElement('input');
+                input.value = code;
+                document.body.appendChild(input);
+                input.select();
+                document.execCommand('copy');
+                document.body.removeChild(input);
+                var originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = 'var(--success)';
+                setTimeout(function() {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+            });
+        }
+
+        function renderCourseCard(course) {
+            var prog = getCourseProgress(course.id);
+            var previewLessons = course.lessons.slice(0, 4);
+            var btnText = prog.completed > 0 ? 'Continue Learning' : 'Start Learning';
+            var isComplete = prog.percent === 100;
+            var cardClass = isComplete ? 'course-card completed' : 'course-card';
+            var barColor = prog.percent === 100 ? 'background: linear-gradient(90deg, var(--success), #20c997);' : '';
+            var youtubeBtn = course.youtube ? '<a href="' + course.youtube + '" target="_blank" class="btn btn-youtube">YouTube</a>' : '<a href="#" class="btn btn-youtube" style="display:none"></a>';
+
+            return '<div class="' + cardClass + '">' +
+                '<div class="course-header">' +
+                '<div class="course-number">' + course.id + '</div>' +
+                '<div class="badges">' +
+                (course.isFree ? '<span class="badge-free">FREE</span>' : '<span class="badge-paid">PAID</span>') +
+                '</div></div>' +
+                '<h3 class="course-title">' + course.title + '</h3>' +
+                '<p class="course-description">' + course.description + '</p>' +
+                '<div class="course-tags">' +
+                course.tags.map(function(tag) { return '<span class="tag">' + tag + '</span>'; }).join('') +
+                '</div>' +
+                '<div class="progress-section">' +
+                '<div class="progress-header"><span>' + prog.completed + '/' + prog.total + ' lessons</span><span>' + prog.percent + '%</span></div>' +
+                '<div class="progress-bar"><div class="progress-fill" style="width: ' + prog.percent + '%; ' + barColor + '"></div></div>' +
+                '</div>' +
+                '<div class="lessons-preview">' +
+                previewLessons.map(function(lesson) {
+                    var isLessonCompleted = progress[course.id + '-' + lesson.id];
+                    return '<div class="lesson-item">' +
+                        '<div class="lesson-status ' + (isLessonCompleted ? 'completed' : '') + '" onclick="toggleLesson(' + course.id + ', ' + lesson.id + ', event)"></div>' +
+                        '<span class="lesson-name ' + (isLessonCompleted ? 'completed' : '') + '">' + lesson.name + '</span>' +
+                        '<span class="lesson-duration">' + lesson.duration + '</span></div>';
+                }).join('') +
+                (course.lessons.length > 4 ? '<div class="lesson-item" style="justify-content: center; color: var(--text-secondary); font-size: 0.85rem;">+ ' + (course.lessons.length - 4) + ' more lessons</div>' : '') +
+                '</div>' +
+                '<div class="course-actions">' +
+                '<button class="btn btn-secondary" onclick="openCourseModal(' + course.id + ')">View All Lessons</button>' +
+                youtubeBtn +
+                '<button class="btn btn-primary" onclick="goToCourse(\'' + course.url + '\')">' + btnText + '</button>' +
+                '</div></div>';
+        }
+
+        function renderAll(filter) {
+            if (!filter) filter = 'all';
+            var grid = document.getElementById('coursesGrid');
+            var filteredCourses = courses;
+            if (filter === 'free') filteredCourses = courses.filter(function(c) { return c.isFree; });
+            else if (filter === 'paid') filteredCourses = courses.filter(function(c) { return !c.isFree; });
+            else if (filter === 'cpp') filteredCourses = courses.filter(function(c) { return c.category.indexOf('cpp') !== -1; });
+            else if (filter === 'cs') filteredCourses = courses.filter(function(c) { return c.category.indexOf('cs') !== -1; });
+            else if (filter === 'sql') filteredCourses = courses.filter(function(c) { return c.category.indexOf('sql') !== -1; });
+            else if (filter === 'algorithms') filteredCourses = courses.filter(function(c) { return c.category.indexOf('algorithms') !== -1; });
+            else if (filter === 'oop') filteredCourses = courses.filter(function(c) { return c.category.indexOf('oop') !== -1; });
+            else if (filter === 'ds') filteredCourses = courses.filter(function(c) { return c.category.indexOf('ds') !== -1; });
+
+            var html = '';
+            var showStages = (filter === 'all');
+
+            if (showStages) {
+                var stage1 = filteredCourses.filter(function(c) { return c.id <= 13; });
+                if (stage1.length > 0) {
+                    html += '<div class="stage-header"><div class="stage-number">01</div><div class="stage-info"><h2>Stage 1: Foundations & Core Programming</h2><p>Courses 1-13: Build your programming mindset and master C++ fundamentals</p></div></div>';
+                    stage1.forEach(function(course) { html += renderCourseCard(course); });
+                }
+                var stage2 = filteredCourses.filter(function(c) { return c.id >= 14; });
+                if (stage2.length > 0) {
+                    html += '<div class="stage-header"><div class="stage-number">02</div><div class="stage-info"><h2>Stage 2: Professional Development</h2><p>Courses 14-24: Master C#, Databases, and real-world application development</p></div></div>';
+                    stage2.forEach(function(course) { html += renderCourseCard(course); });
+                }
+            } else {
+                filteredCourses.forEach(function(course) { html += renderCourseCard(course); });
+            }
+
+            grid.innerHTML = html;
+
+            var stats = getOverallStats();
+            document.getElementById('totalLessons').textContent = stats.totalLessons;
+            document.getElementById('completedLessons').textContent = stats.completedLessons;
+            document.getElementById('overallProgress').textContent = stats.percent + '%';
+        }
+
+        document.getElementById('lessonModal').addEventListener('click', function(e) {
+            if (e.target === this) closeModal();
+        });
+
+        document.querySelectorAll('.filter-btn').forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                filterCourses(this.getAttribute('data-filter'));
+            });
+        });
+
+        progress = getProgress();
+        renderAll();
+    </script>
+    <script>
+        var ACCESS_PASSWORD = 'Fundamental@2026';
+
+        function togglePass() {
+            var input = document.getElementById('accessPassword');
+            var btn = document.querySelector('.toggle-pass');
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.textContent = 'Hide';
+            } else {
+                input.type = 'password';
+                btn.textContent = 'Show';
+            }
+        }
+
+        function checkPassword() {
+            var input = document.getElementById('accessPassword').value;
+            var error = document.getElementById('authError');
+            if (input === ACCESS_PASSWORD) {
+                sessionStorage.setItem('roadmapAccess', 'true');
+                document.getElementById('authContainer').style.opacity = '0';
+                document.getElementById('authContainer').style.transition = 'opacity 0.4s ease';
+                setTimeout(function() {
+                    document.getElementById('authContainer').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                }, 400);
+            } else {
+                error.textContent = 'Incorrect password';
+                error.style.display = 'block';
+                document.getElementById('accessPassword').value = '';
+                document.getElementById('accessPassword').focus();
+            }
+        }
+
+        function checkAuth() {
+            if (sessionStorage.getItem('roadmapAccess') === 'true') {
+                document.getElementById('authContainer').style.display = 'none';
+                document.getElementById('mainContent').style.display = 'block';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>
