@@ -342,6 +342,24 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 30px rgba(0,210,255,0.3);
         }
+        .remember-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 6px 2px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .remember-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+            margin: 0;
+            accent-color: var(--accent-1);
+            cursor: pointer;
+        }
         .auth-error {
             background: rgba(255,68,68,0.1);
             border: 1px solid var(--danger);
@@ -367,6 +385,10 @@
                     <input type="password" id="accessPassword" placeholder="Enter password" maxlength="100" autocomplete="current-password">
                     <button class="toggle-pass" id="togglePassBtn" type="button">Show</button>
                 </div>
+                <label class="remember-row" for="rememberMe">
+                    <input type="checkbox" id="rememberMe">
+                    <span>Remember me</span>
+                </label>
                 <button class="auth-btn" id="authSubmitBtn" type="submit">Enter</button>
             </form>
             <div class="auth-error" id="authError"></div>
@@ -1312,6 +1334,8 @@
     <script>
         // Soft-gate only: content is public, password is visible in source by design.
         var ACCESS_PASSWORD = 'Fundamental@2026';
+        var REMEMBER_KEY = 'roadmapRemember';
+        var LEGACY_SESSION_KEY = 'roadmapAccess';
         var authAttempts = 0;
         var lockoutUntil = 0;
         var MAX_AUTH_ATTEMPTS = 5;
@@ -1345,7 +1369,13 @@
             var input = field.value;
             if (input === ACCESS_PASSWORD) {
                 authAttempts = 0;
-                try { sessionStorage.setItem('roadmapAccess', 'true'); } catch (e) { /* storage blocked */ }
+                try {
+                    if (document.getElementById('rememberMe').checked) {
+                        localStorage.setItem(REMEMBER_KEY, 'true');
+                    } else {
+                        localStorage.removeItem(REMEMBER_KEY);
+                    }
+                } catch (e) { /* storage blocked */ }
                 setAuthError('');
                 document.getElementById('authContainer').style.opacity = '0';
                 document.getElementById('authContainer').style.transition = 'opacity 0.4s ease';
@@ -1368,13 +1398,14 @@
         }
 
         function checkAuth() {
+            try { sessionStorage.removeItem(LEGACY_SESSION_KEY); } catch (e) { /* storage blocked */ }
             try {
-                if (sessionStorage.getItem('roadmapAccess') === 'true') {
+                if (localStorage.getItem(REMEMBER_KEY) === 'true') {
                     document.getElementById('authContainer').style.display = 'none';
                     document.getElementById('mainContent').style.display = 'block';
                 }
             } catch (e) {
-                // sessionStorage unavailable - stay on gate.
+                // localStorage unavailable - stay on gate.
             }
         }
 
