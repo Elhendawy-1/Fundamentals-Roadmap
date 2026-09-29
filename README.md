@@ -7,11 +7,7 @@ An interactive single-page roadmap to track your progress through the full Progr
 
 **Live page:** https://elhendawy-1.github.io/Fundamentals-Roadmap/
 
-**Access password:** (click copy icon to copy)
-
-```text
-Fundamental@2026
-```
+> This page is protected by an access password. Contact the owner for access.
 
 **Local file:** `index.html` (single-file app, also used for GitHub Pages)
 
@@ -87,7 +83,7 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 - **YouTube buttons:** free playlists for courses 1-3
 - **Support & Coupons section:** SUPPORT25% / 50% / 75% / 100% with copy button
 - **Responsive dark UI:** gradient `#0f0c29 → #302b63 → #24243e`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoint 768px
-- **Password gate:** client-side gate (`Fundamental@2026`, stored in `sessionStorage`)
+- **Password gate:** client-side soft-gate (stored in `sessionStorage`)
 
 > Note: password + progress are client-side only (HTML/JS). Anyone can view source. Don't use for real security.
 
@@ -96,10 +92,7 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 ## How to Use
 
 1. Open `index.html` in any browser
-2. Enter password (copy below):
-```text
-Fundamental@2026
-```
+2. Enter the access password provided by the owner
 3. View overall progress in the dashboard
 4. Filter by Stage / Free / C++ / C# / SQL / Algorithms / OOP / DS
 5. Click `Start Learning` / `Continue Learning` to go to the course
