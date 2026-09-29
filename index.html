@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive roadmap to track progress through Programming Fundamentals courses.">
+    <meta name="referrer" content="no-referrer">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data:; script-src 'self' 'unsafe-inline' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https:; font-src 'self' data: https:; connect-src 'self' https:; base-uri 'self'; form-action 'self';">
     <title>Programming Fundamentals Roadmap</title>
     <style>
         :root {
@@ -359,13 +362,13 @@
                 <h1>Programming Fundamentals Roadmap</h1>
                 <p>Based on Dr. Mohammed Abu-Hadhoud's 24 Courses</p>
             </div>
-            <div class="auth-form">
+            <form class="auth-form" id="authForm" autocomplete="off">
                 <div class="form-group password-group">
-                    <input type="password" id="accessPassword" placeholder="Enter password" onkeypress="if(event.key==='Enter')checkPassword()">
-                    <button class="toggle-pass" onclick="togglePass()" type="button">Show</button>
+                    <input type="password" id="accessPassword" placeholder="Enter password" maxlength="100" autocomplete="current-password">
+                    <button class="toggle-pass" id="togglePassBtn" type="button">Show</button>
                 </div>
-                <button class="auth-btn" onclick="checkPassword()">Enter</button>
-            </div>
+                <button class="auth-btn" id="authSubmitBtn" type="submit">Enter</button>
+            </form>
             <div class="auth-error" id="authError"></div>
         </div>
     </div>
@@ -395,14 +398,14 @@
         </div>
         <div class="courses-grid" id="coursesGrid"></div>
         <div style="text-align: center;">
-            <button class="btn btn-reset" onclick="resetProgress()">Reset All Progress</button>
+            <button class="btn btn-reset" id="resetProgressBtn" type="button">Reset All Progress</button>
         </div>
     </div>
     <div class="modal-overlay" id="lessonModal">
         <div class="modal">
             <div class="modal-header">
                 <h2 class="modal-title" id="modalTitle"></h2>
-                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <button class="modal-close" id="modalCloseBtn" type="button">&times;</button>
             </div>
             <div class="modal-body" id="modalBody"></div>
         </div>
@@ -410,36 +413,46 @@
     <section class="coupon-section">
         <h2>Support &amp; Coupons</h2>
         <p class="coupon-subtitle">Use these coupon codes to get discounts on courses</p>
-        <div class="coupon-grid">
+        <div class="coupon-grid" id="couponGrid">
             <div class="coupon-card">
                 <div class="coupon-discount">25%</div>
                 <div class="coupon-code">SUPPORT25%</div>
-                <button class="coupon-copy" onclick="copyCoupon('SUPPORT25%', event)">Copy Code</button>
+                <button class="coupon-copy" data-coupon="SUPPORT25%" type="button">Copy Code</button>
             </div>
             <div class="coupon-card">
                 <div class="coupon-discount">50%</div>
                 <div class="coupon-code">SUPPORT50%</div>
-                <button class="coupon-copy" onclick="copyCoupon('SUPPORT50%', event)">Copy Code</button>
+                <button class="coupon-copy" data-coupon="SUPPORT50%" type="button">Copy Code</button>
             </div>
             <div class="coupon-card">
                 <div class="coupon-discount">75%</div>
                 <div class="coupon-code">SUPPORT75%</div>
-                <button class="coupon-copy" onclick="copyCoupon('SUPPORT75%', event)">Copy Code</button>
+                <button class="coupon-copy" data-coupon="SUPPORT75%" type="button">Copy Code</button>
             </div>
             <div class="coupon-card">
                 <div class="coupon-discount">100%</div>
                 <div class="coupon-code">SUPPORT100%</div>
-                <button class="coupon-copy" onclick="copyCoupon('SUPPORT100%', event)">Copy Code</button>
+                <button class="coupon-copy" data-coupon="SUPPORT100%" type="button">Copy Code</button>
             </div>
         </div>
     </section>
     <footer>
         <p>&copy; 2026 Elhendawy. All Rights Reserved.</p>
         <p>Created with respect to Dr. Mohammed Abu-Hadhoud</p>
-        <p><a href="https://programmingadvices.com" target="_blank">ProgrammingAdvices.com</a> | <a href="https://www.youtube.com/@ProgrammingAdvices" target="_blank">YouTube Channel</a></p>
+        <p><a href="https://programmingadvices.com" target="_blank" rel="noopener noreferrer">ProgrammingAdvices.com</a> | <a href="https://www.youtube.com/@ProgrammingAdvices" target="_blank" rel="noopener noreferrer">YouTube Channel</a></p>
     </footer>
     </div>
     <script>
+        // Security helpers. Note: password gate below is a soft-gate only (public content).
+        function escapeHtml(str) {
+            return String(str == null ? '' : str).replace(/[&<>"']/g, function (c) {
+                return ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'})[c];
+            });
+        }
+        var ALLOWED_FILTERS = ['all', 'free', 'paid', 'cpp', 'cs', 'sql', 'algorithms', 'oop', 'ds'];
+        function isAllowedCourseUrl(url) {
+            return typeof url === 'string' && /^https:\/\/(www\.)?(programmingadvices\.com|youtube\.com|youtu\.be)\//.test(url);
+        }
         const courses = [
             {id:1,title:"Programming Foundations - Level 1",description:"Build a solid understanding of computer science fundamentals, binary systems, and programming concepts.",url:"https://programmingadvices.com/p/00316b",isFree:true,tags:["fundamentals","beginner","free"],category:["cpp","free"],youtube:"https://www.youtube.com/playlist?list=PL3X--QIIK-OHgMV2yBz3GLfM5d_5BxOSj",lessons:[
                 {id:1,name:"Lesson # 1 - From Data to Wisdom: Data, Information, Knowledge, and Wisdom",duration:"15 min"},
@@ -972,12 +985,22 @@
         let progress = {};
 
         function getProgress() {
-            const saved = localStorage.getItem('roadmapProgress');
-            return saved ? JSON.parse(saved) : {};
+            try {
+                var raw = localStorage.getItem('roadmapProgress');
+                if (!raw) return {};
+                var parsed = JSON.parse(raw);
+                return (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) ? parsed : {};
+            } catch (e) {
+                return {};
+            }
         }
 
         function saveProgress() {
-            localStorage.setItem('roadmapProgress', JSON.stringify(progress));
+            try {
+                localStorage.setItem('roadmapProgress', JSON.stringify(progress));
+            } catch (e) {
+                // Quota exceeded or storage blocked (private mode) - progress stays in memory.
+            }
         }
 
         function toggleLesson(courseId, lessonId, event) {
@@ -1046,10 +1069,10 @@
                 var isCompleted = progress[courseId + '-' + lesson.id];
                 html += '<div class="modal-lesson">' +
                     '<span class="modal-lesson-num">' + (index + 1) + '</span>' +
-                    '<div class="lesson-status ' + (isCompleted ? 'completed' : '') + '" onclick="toggleLessonFromModal(' + courseId + ', ' + lesson.id + ')"></div>' +
+                    '<div class="lesson-status ' + (isCompleted ? 'completed' : '') + '" data-action="toggle-modal" data-course="' + courseId + '" data-lesson="' + lesson.id + '" role="button" tabindex="0" aria-label="Toggle lesson"></div>' +
                     '<div class="modal-lesson-info">' +
-                    '<div class="modal-lesson-name">' + lesson.name + '</div>' +
-                    '<div class="modal-lesson-duration">' + lesson.duration + '</div>' +
+                    '<div class="modal-lesson-name">' + escapeHtml(lesson.name) + '</div>' +
+                    '<div class="modal-lesson-duration">' + escapeHtml(lesson.duration) + '</div>' +
                     '</div></div>';
             });
             document.getElementById('modalBody').innerHTML = html;
@@ -1061,8 +1084,11 @@
         }
 
         function filterCourses(filter) {
+            if (ALLOWED_FILTERS.indexOf(filter) === -1) return;
             document.querySelectorAll('.filter-btn').forEach(function(btn) { btn.classList.remove('active'); });
-            document.querySelector('[data-filter="' + filter + '"]').classList.add('active');
+            var safeFilter = (window.CSS && CSS.escape) ? CSS.escape(filter) : filter;
+            var activeBtn = document.querySelector('[data-filter="' + safeFilter + '"]');
+            if (activeBtn) activeBtn.classList.add('active');
             renderAll(filter);
         }
 
@@ -1075,34 +1101,64 @@
         }
 
         function goToCourse(url) {
-            window.open(url, '_blank');
+            if (!isAllowedCourseUrl(url)) return;
+            window.open(url, '_blank', 'noopener,noreferrer');
         }
 
-        function copyCoupon(code, evt) {
-            var btn = evt.target;
-            navigator.clipboard.writeText(code).then(function() {
-                var originalText = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.style.background = 'var(--success)';
-                setTimeout(function() {
-                    btn.textContent = originalText;
-                    btn.style.background = '';
-                }, 2000);
-            }).catch(function() {
-                var input = document.createElement('input');
-                input.value = code;
-                document.body.appendChild(input);
-                input.select();
-                document.execCommand('copy');
-                document.body.removeChild(input);
-                var originalText = btn.textContent;
-                btn.textContent = 'Copied!';
-                btn.style.background = 'var(--success)';
-                setTimeout(function() {
-                    btn.textContent = originalText;
-                    btn.style.background = '';
-                }, 2000);
-            });
+        function flashCopied(btn, success) {
+            if (!btn || !btn.textContent) return;
+            if (!btn._copyTimer && btn.dataset.origText === undefined) {
+                btn.dataset.origText = btn.textContent;
+            }
+            if (btn._copyTimer) clearTimeout(btn._copyTimer);
+            btn.textContent = success === false ? 'Copy failed' : 'Copied!';
+            btn.style.background = success === false ? 'var(--danger)' : 'var(--success)';
+            btn._copyTimer = setTimeout(function() {
+                btn.textContent = btn.dataset.origText || 'Copy Code';
+                btn.style.background = '';
+                btn._copyTimer = null;
+            }, 2000);
+        }
+
+        function copyCoupon(code, btnOrEvt) {
+            var btn = null;
+            if (btnOrEvt && btnOrEvt.nodeType === 1) {
+                btn = btnOrEvt;
+            } else if (btnOrEvt && btnOrEvt.target) {
+                var t = btnOrEvt.target;
+                btn = (t.closest ? t.closest('[data-coupon]') : null) || (t.currentTarget && t.currentTarget.matches && t.currentTarget.matches('[data-coupon]') ? t.currentTarget : null);
+            }
+            if (!btn || !btn.matches || !btn.matches('[data-coupon]')) return;
+            var safeCode = String(code == null ? '' : code);
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(safeCode).then(function() {
+                    flashCopied(btn, true);
+                }, function() {
+                    legacyCopy(safeCode, btn);
+                });
+            } else {
+                legacyCopy(safeCode, btn);
+            }
+        }
+
+        function legacyCopy(text, btn) {
+            var copied = false;
+            var area = null;
+            try {
+                area = document.createElement('textarea');
+                area.value = text;
+                area.setAttribute('readonly', '');
+                area.style.position = 'fixed';
+                area.style.opacity = '0';
+                document.body.appendChild(area);
+                area.select();
+                try { copied = document.execCommand('copy'); } catch (e) { copied = false; }
+            } catch (e) {
+                copied = false;
+            } finally {
+                if (area && area.parentNode) area.parentNode.removeChild(area);
+                if (btn && btn.textContent) flashCopied(btn, copied);
+            }
         }
 
         function renderCourseCard(course) {
@@ -1112,18 +1168,20 @@
             var isComplete = prog.percent === 100;
             var cardClass = isComplete ? 'course-card completed' : 'course-card';
             var barColor = prog.percent === 100 ? 'background: linear-gradient(90deg, var(--success), #20c997);' : '';
-            var youtubeBtn = course.youtube ? '<a href="' + course.youtube + '" target="_blank" class="btn btn-youtube">YouTube</a>' : '<a href="#" class="btn btn-youtube" style="display:none"></a>';
+            var safeYoutube = isAllowedCourseUrl(course.youtube) ? escapeHtml(course.youtube) : '';
+            var youtubeBtn = safeYoutube ? '<a href="' + safeYoutube + '" target="_blank" rel="noopener noreferrer" class="btn btn-youtube">YouTube</a>' : '<a href="#" class="btn btn-youtube" style="display:none"></a>';
+            var safeUrl = isAllowedCourseUrl(course.url) ? escapeHtml(course.url) : '#';
 
             return '<div class="' + cardClass + '">' +
                 '<div class="course-header">' +
-                '<div class="course-number">' + course.id + '</div>' +
+                '<div class="course-number">' + Number(course.id) + '</div>' +
                 '<div class="badges">' +
                 (course.isFree ? '<span class="badge-free">FREE</span>' : '<span class="badge-paid">PAID</span>') +
                 '</div></div>' +
-                '<h3 class="course-title">' + course.title + '</h3>' +
-                '<p class="course-description">' + course.description + '</p>' +
+                '<h3 class="course-title">' + escapeHtml(course.title) + '</h3>' +
+                '<p class="course-description">' + escapeHtml(course.description) + '</p>' +
                 '<div class="course-tags">' +
-                course.tags.map(function(tag) { return '<span class="tag">' + tag + '</span>'; }).join('') +
+                course.tags.map(function(tag) { return '<span class="tag">' + escapeHtml(tag) + '</span>'; }).join('') +
                 '</div>' +
                 '<div class="progress-section">' +
                 '<div class="progress-header"><span>' + prog.completed + '/' + prog.total + ' lessons</span><span>' + prog.percent + '%</span></div>' +
@@ -1133,21 +1191,21 @@
                 previewLessons.map(function(lesson) {
                     var isLessonCompleted = progress[course.id + '-' + lesson.id];
                     return '<div class="lesson-item">' +
-                        '<div class="lesson-status ' + (isLessonCompleted ? 'completed' : '') + '" onclick="toggleLesson(' + course.id + ', ' + lesson.id + ', event)"></div>' +
-                        '<span class="lesson-name ' + (isLessonCompleted ? 'completed' : '') + '">' + lesson.name + '</span>' +
-                        '<span class="lesson-duration">' + lesson.duration + '</span></div>';
+                        '<div class="lesson-status ' + (isLessonCompleted ? 'completed' : '') + '" data-action="toggle" data-course="' + Number(course.id) + '" data-lesson="' + Number(lesson.id) + '" role="button" tabindex="0" aria-label="Toggle lesson"></div>' +
+                        '<span class="lesson-name ' + (isLessonCompleted ? 'completed' : '') + '">' + escapeHtml(lesson.name) + '</span>' +
+                        '<span class="lesson-duration">' + escapeHtml(lesson.duration) + '</span></div>';
                 }).join('') +
                 (course.lessons.length > 4 ? '<div class="lesson-item" style="justify-content: center; color: var(--text-secondary); font-size: 0.85rem;">+ ' + (course.lessons.length - 4) + ' more lessons</div>' : '') +
                 '</div>' +
                 '<div class="course-actions">' +
-                '<button class="btn btn-secondary" onclick="openCourseModal(' + course.id + ')">View All Lessons</button>' +
+                '<button class="btn btn-secondary" data-action="open-modal" data-course="' + Number(course.id) + '">View All Lessons</button>' +
                 youtubeBtn +
-                '<button class="btn btn-primary" onclick="goToCourse(\'' + course.url + '\')">' + btnText + '</button>' +
+                '<button class="btn btn-primary" data-action="goto" data-url="' + safeUrl + '">' + escapeHtml(btnText) + '</button>' +
                 '</div></div>';
         }
 
         function renderAll(filter) {
-            if (!filter) filter = 'all';
+            if (!filter || ALLOWED_FILTERS.indexOf(filter) === -1) filter = 'all';
             var grid = document.getElementById('coursesGrid');
             var filteredCourses = courses;
             if (filter === 'free') filteredCourses = courses.filter(function(c) { return c.isFree; });
@@ -1189,21 +1247,79 @@
             if (e.target === this) closeModal();
         });
 
+        document.getElementById('modalCloseBtn').addEventListener('click', closeModal);
+
         document.querySelectorAll('.filter-btn').forEach(function(btn) {
             btn.addEventListener('click', function() {
                 filterCourses(this.getAttribute('data-filter'));
             });
         });
 
+        document.getElementById('coursesGrid').addEventListener('click', function(e) {
+            var el = e.target.closest('[data-action]');
+            if (!el || !this.contains(el)) return;
+            var action = el.getAttribute('data-action');
+            var courseId = parseInt(el.getAttribute('data-course'), 10);
+            if (action === 'toggle') {
+                var lessonId = parseInt(el.getAttribute('data-lesson'), 10);
+                if (!isNaN(courseId) && !isNaN(lessonId)) toggleLesson(courseId, lessonId);
+            } else if (action === 'open-modal') {
+                if (!isNaN(courseId)) openCourseModal(courseId);
+            } else if (action === 'goto') {
+                goToCourse(el.getAttribute('data-url'));
+            }
+        });
+
+        document.getElementById('coursesGrid').addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            var el = e.target.closest && e.target.closest('[data-action="toggle"]');
+            if (!el || !this.contains(el)) return;
+            e.preventDefault();
+            var courseId = parseInt(el.getAttribute('data-course'), 10);
+            var lessonId = parseInt(el.getAttribute('data-lesson'), 10);
+            if (!isNaN(courseId) && !isNaN(lessonId)) toggleLesson(courseId, lessonId);
+        });
+
+        document.getElementById('modalBody').addEventListener('click', function(e) {
+            var el = e.target.closest('[data-action="toggle-modal"]');
+            if (!el || !this.contains(el)) return;
+            var courseId = parseInt(el.getAttribute('data-course'), 10);
+            var lessonId = parseInt(el.getAttribute('data-lesson'), 10);
+            if (!isNaN(courseId) && !isNaN(lessonId)) toggleLessonFromModal(courseId, lessonId);
+        });
+
+        document.getElementById('modalBody').addEventListener('keydown', function(e) {
+            if (e.key !== 'Enter' && e.key !== ' ') return;
+            var el = e.target.closest && e.target.closest('[data-action="toggle-modal"]');
+            if (!el || !this.contains(el)) return;
+            e.preventDefault();
+            var courseId = parseInt(el.getAttribute('data-course'), 10);
+            var lessonId = parseInt(el.getAttribute('data-lesson'), 10);
+            if (!isNaN(courseId) && !isNaN(lessonId)) toggleLessonFromModal(courseId, lessonId);
+        });
+
+        document.getElementById('resetProgressBtn').addEventListener('click', resetProgress);
+
+        document.getElementById('couponGrid').addEventListener('click', function(e) {
+            var btn = e.target.closest('[data-coupon]');
+            if (!btn || !this.contains(btn)) return;
+            copyCoupon(btn.getAttribute('data-coupon'), btn);
+        });
+
         progress = getProgress();
         renderAll();
     </script>
     <script>
+        // Soft-gate only: content is public, password is visible in source by design.
         var ACCESS_PASSWORD = 'Fundamental@2026';
+        var authAttempts = 0;
+        var lockoutUntil = 0;
+        var MAX_AUTH_ATTEMPTS = 5;
+        var LOCKOUT_MS = 30000;
 
         function togglePass() {
             var input = document.getElementById('accessPassword');
-            var btn = document.querySelector('.toggle-pass');
+            var btn = document.getElementById('togglePassBtn');
             if (input.type === 'password') {
                 input.type = 'text';
                 btn.textContent = 'Hide';
@@ -1213,11 +1329,24 @@
             }
         }
 
-        function checkPassword() {
-            var input = document.getElementById('accessPassword').value;
+        function setAuthError(msg) {
             var error = document.getElementById('authError');
+            error.textContent = msg;
+            error.style.display = msg ? 'block' : 'none';
+        }
+
+        function checkPassword() {
+            var now = Date.now();
+            if (now < lockoutUntil) {
+                setAuthError('Too many attempts. Try again shortly.');
+                return;
+            }
+            var field = document.getElementById('accessPassword');
+            var input = field.value;
             if (input === ACCESS_PASSWORD) {
-                sessionStorage.setItem('roadmapAccess', 'true');
+                authAttempts = 0;
+                try { sessionStorage.setItem('roadmapAccess', 'true'); } catch (e) { /* storage blocked */ }
+                setAuthError('');
                 document.getElementById('authContainer').style.opacity = '0';
                 document.getElementById('authContainer').style.transition = 'opacity 0.4s ease';
                 setTimeout(function() {
@@ -1225,22 +1354,37 @@
                     document.getElementById('mainContent').style.display = 'block';
                 }, 400);
             } else {
-                error.textContent = 'Incorrect password';
-                error.style.display = 'block';
-                document.getElementById('accessPassword').value = '';
-                document.getElementById('accessPassword').focus();
+                authAttempts++;
+                if (authAttempts >= MAX_AUTH_ATTEMPTS) {
+                    lockoutUntil = now + LOCKOUT_MS;
+                    authAttempts = 0;
+                    setAuthError('Too many attempts. Try again in 30 seconds.');
+                } else {
+                    setAuthError('Incorrect password');
+                }
+                field.value = '';
+                field.focus();
             }
         }
 
         function checkAuth() {
-            if (sessionStorage.getItem('roadmapAccess') === 'true') {
-                document.getElementById('authContainer').style.display = 'none';
-                document.getElementById('mainContent').style.display = 'block';
+            try {
+                if (sessionStorage.getItem('roadmapAccess') === 'true') {
+                    document.getElementById('authContainer').style.display = 'none';
+                    document.getElementById('mainContent').style.display = 'block';
+                }
+            } catch (e) {
+                // sessionStorage unavailable - stay on gate.
             }
         }
 
         document.addEventListener('DOMContentLoaded', function() {
             checkAuth();
+            document.getElementById('togglePassBtn').addEventListener('click', togglePass);
+            document.getElementById('authForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                checkPassword();
+            });
         });
     </script>
 </body>

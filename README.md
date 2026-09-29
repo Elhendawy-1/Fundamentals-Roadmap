@@ -13,7 +13,7 @@ An interactive single-page roadmap to track your progress through the full Progr
 Fundamental@2026
 ```
 
-**Local files:** `fundamentals-roadmap.html` (also published as `index.html` for GitHub Pages)
+**Local file:** `index.html` (single-file app, also used for GitHub Pages)
 
 > 🎁 **Don't miss the coupons at the end of the webpage — scroll down for different discounts (25%, 50%, 75%, 100%)!**
 
@@ -95,7 +95,7 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 
 ## How to Use
 
-1. Open `fundamentals-roadmap.html` (or `index.html`) in any browser
+1. Open `index.html` in any browser
 2. Enter password (copy below):
 ```text
 Fundamental@2026
@@ -119,7 +119,7 @@ cd Fundamentals-Roadmap
 
 # just open in browser (no build needed)
 # Windows:
-start fundamentals-roadmap.html
+start index.html
 # macOS:
 open index.html
 # Linux:
@@ -132,9 +132,7 @@ To enable GitHub Pages:
 3. Open `https://Elhendawy-1.github.io/Fundamentals-Roadmap/`
 
 Files:
-- `fundamentals-roadmap.html` — main app
-- `index.html` — identical copy for GitHub Pages root
-- `prompt.md` — original spec for the page
+- `index.html` — main app (single-file HTML with inline `<style>` + `<script>`, served as GitHub Pages root)
 
 No dependencies. Single HTML file with inline `<style>` + `<script>`. UTF-8, HTML5 semantic.
 
