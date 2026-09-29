@@ -75,15 +75,15 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 ## Features of This Page
 
 - **Overall Progress Dashboard:** total courses (24), total lessons, completed, % progress
-- **Filter Controls:** All / Free / Paid / C++ / C# / SQL / Algorithms / OOP / Data Structures
+- **Filter Controls:** All / Free / Paid / C++ / C# / SQL / Algorithms / OOP / Data Structures / Fundamentals (active filter is kept while toggling lessons)
 - **Course Cards:** number badge, FREE/PAID badge, description, tags, progress bar (`x/y lessons`), lesson preview
-- **Course Modal:** click `View All Lessons` → full lesson list with durations, click to toggle completion
+- **Course Modal:** click `View All Lessons` → full lesson list with durations, click to toggle completion (keyboard: Enter/Space toggles, `Esc` closes)
 - **Progress Tracking with `localStorage`:** auto-save, restore on reload, Reset All Progress with confirm
 - **Start / Continue Learning buttons:** deep links to `programmingadvices.com`
 - **YouTube buttons:** free playlists for courses 1-3
 - **Support & Coupons section:** SUPPORT25% / 50% / 75% / 100% with copy button
-- **Responsive dark UI:** gradient `#0f0c29 → #302b63 → #24243e`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoint 768px
-- **Password gate:** client-side soft-gate (stored in `sessionStorage`)
+- **Responsive dark UI:** gradient `#0f0c29 → #302b63 → #24243e`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoints 768px / 480px
+- **Password gate:** client-side soft-gate — asks on every load by default; check `Remember me` to stay logged in via `localStorage`
 
 > Note: password + progress are client-side only (HTML/JS). Anyone can view source. Don't use for real security.
 
@@ -92,9 +92,9 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 ## How to Use
 
 1. Open `index.html` in any browser
-2. Enter the access password provided by the owner
+2. Enter the access password provided by the owner (tick `Remember me` to skip this on future visits)
 3. View overall progress in the dashboard
-4. Filter by Stage / Free / C++ / C# / SQL / Algorithms / OOP / DS
+4. Filter by All / Free / Paid / C++ / C# / SQL / Algorithms / OOP / Data Structures / Fundamentals
 5. Click `Start Learning` / `Continue Learning` to go to the course
 6. Click `View All Lessons` → click lessons to mark complete
 7. Progress auto-saves to `localStorage`
