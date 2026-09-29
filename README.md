@@ -7,7 +7,7 @@ An interactive single-page roadmap to track your progress through the full Progr
 
 **Live page:** https://elhendawy-1.github.io/Fundamentals-Roadmap/
 
-> This page is protected by an access password. Contact the owner for access.
+> This page sits behind a lightweight client-side soft-gate (not real security — anyone can view source). Contact the owner for the access password.
 
 **Local file:** `index.html` (single-file app, also used for GitHub Pages)
 
