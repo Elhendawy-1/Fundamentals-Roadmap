@@ -82,7 +82,7 @@ Use the `Copy Code` button under each coupon on the live page to copy instantly.
 - **Start / Continue Learning buttons:** deep links to `programmingadvices.com`
 - **YouTube buttons:** free playlists for courses 1-3
 - **Support & Coupons section:** SUPPORT25% / 50% / 75% / 100% with copy button
-- **Responsive dark UI:** gradient `#0f0c29 → #302b63 → #24243e`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoints 768px / 480px
+- **Responsive dark UI:** gradient `#0a0a1a → #0d1b2a → #1b2838`, cyan `#00d2ff` / blue `#3a7bd5`, grid max-width 1400px, mobile breakpoints 768px / 480px
 - **Password gate:** client-side soft-gate — asks on every load by default; check `Remember me` to stay logged in via `localStorage`
 
 > Note: password + progress are client-side only (HTML/JS). Anyone can view source. Don't use for real security.

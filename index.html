@@ -389,7 +389,7 @@
             </div>
             <form class="auth-form" id="authForm">
                 <div class="form-group password-group">
-                    <input type="password" id="accessPassword" placeholder="Enter password" maxlength="100" autocomplete="current-password">
+                    <input type="password" id="accessPassword" placeholder="Enter password" maxlength="100" autocomplete="current-password" aria-label="Access password">
                     <button class="toggle-pass" id="togglePassBtn" type="button">Show</button>
                 </div>
                 <label class="remember-row" for="rememberMe">
@@ -1014,8 +1014,18 @@
         ];
         let progress = {};
         var currentFilter = 'all';
+        var modalOpener = null;
+
+        function findLesson(courseId, lessonId) {
+            if (typeof courseId !== 'number' || typeof lessonId !== 'number' || isNaN(courseId) || isNaN(lessonId)) return null;
+            var course = courses.find(function(c) { return c.id === courseId; });
+            if (!course) return null;
+            var lesson = course.lessons.find(function(l) { return l.id === lessonId; });
+            return lesson ? {course: course, lesson: lesson} : null;
+        }
 
         function flipLesson(courseId, lessonId) {
+            if (!findLesson(courseId, lessonId)) return false;
             var key = courseId + '-' + lessonId;
             if (progress[key]) {
                 delete progress[key];
@@ -1023,6 +1033,7 @@
                 progress[key] = true;
             }
             saveProgress();
+            return true;
         }
 
         function refocusToggle(container, action, courseId, lessonId) {
@@ -1053,13 +1064,13 @@
         }
 
         function toggleLesson(courseId, lessonId, event) {
-            flipLesson(courseId, lessonId);
+            if (!flipLesson(courseId, lessonId)) return;
             renderAll();
             refocusToggle(document.getElementById('coursesGrid'), 'toggle', courseId, lessonId);
         }
 
         function toggleLessonFromModal(courseId, lessonId) {
-            flipLesson(courseId, lessonId);
+            if (!flipLesson(courseId, lessonId)) return;
             var modalBody = document.getElementById('modalBody');
             var scrollTop = modalBody.scrollTop;
             renderAll();
@@ -1122,6 +1133,10 @@
         function closeModal() {
             document.getElementById('lessonModal').classList.remove('active');
             document.body.style.overflow = '';
+            if (modalOpener && document.contains(modalOpener)) {
+                try { modalOpener.focus({preventScroll: true}); } catch (e) { try { modalOpener.focus(); } catch (e2) {} }
+            }
+            modalOpener = null;
         }
 
         function filterCourses(filter) {
@@ -1202,7 +1217,9 @@
             var barColor = prog.percent === 100 ? 'background: linear-gradient(90deg, var(--success), #20c997);' : '';
             var safeYoutube = isAllowedCourseUrl(course.youtube) ? escapeHtml(course.youtube) : '';
             var youtubeBtn = safeYoutube ? '<a href="' + safeYoutube + '" target="_blank" rel="noopener noreferrer" class="btn btn-youtube">YouTube</a>' : '';
-            var safeUrl = isAllowedCourseUrl(course.url) ? escapeHtml(course.url) : '#';
+            var courseLink = isAllowedCourseUrl(course.url)
+                ? '<a class="btn btn-primary" href="' + escapeHtml(course.url) + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(btnText) + '</a>'
+                : '<span class="btn btn-secondary" aria-disabled="true">' + escapeHtml(btnText) + '</span>';
 
             return '<div class="' + cardClass + '">' +
                 '<div class="course-header">' +
@@ -1232,7 +1249,7 @@
                 '<div class="course-actions">' +
                 '<button class="btn btn-secondary" data-action="open-modal" data-course="' + Number(course.id) + '">View All Lessons</button>' +
                 youtubeBtn +
-                '<a class="btn btn-primary" href="' + safeUrl + '" target="_blank" rel="noopener noreferrer">' + escapeHtml(btnText) + '</a>' +
+                courseLink +
                 '</div></div>';
         }
 
@@ -1302,8 +1319,17 @@
                 var lessonId = parseInt(el.getAttribute('data-lesson'), 10);
                 if (!isNaN(courseId) && !isNaN(lessonId)) toggleLesson(courseId, lessonId);
             } else if (action === 'open-modal') {
-                if (!isNaN(courseId)) openCourseModal(courseId);
+                if (!isNaN(courseId)) { modalOpener = el; openCourseModal(courseId); }
             }
+        });
+
+        document.getElementById('lessonModal').addEventListener('keydown', function(e) {
+            if (e.key !== 'Tab') return;
+            var items = this.querySelectorAll('button, [href], input, [tabindex]:not([tabindex="-1"])');
+            if (!items.length) return;
+            var first = items[0], last = items[items.length - 1];
+            if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+            else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
         });
 
         document.addEventListener('keydown', function(e) {
@@ -1357,10 +1383,34 @@
         var ACCESS_PASSWORD_HASH = '101dc56d72d4224b999284f544d82549ed8fc363846a0fced77e367712a738dc';
         var REMEMBER_KEY = 'roadmapRemember';
         var LEGACY_SESSION_KEY = 'roadmapAccess';
+        var AUTH_LOCK_KEY = 'roadmapAuthLock';
         var authAttempts = 0;
         var lockoutUntil = 0;
         var MAX_AUTH_ATTEMPTS = 5;
         var LOCKOUT_MS = 30000;
+
+        function readAuthLock() {
+            try {
+                var raw = localStorage.getItem(AUTH_LOCK_KEY);
+                if (!raw) return {attempts: 0, lockoutUntil: 0};
+                var o = JSON.parse(raw);
+                if (!o || typeof o !== 'object') return {attempts: 0, lockoutUntil: 0};
+                return {
+                    attempts: (+o.attempts) > 0 ? (+o.attempts) : 0,
+                    lockoutUntil: (+o.lockoutUntil) > 0 ? (+o.lockoutUntil) : 0
+                };
+            } catch (e) {
+                return {attempts: 0, lockoutUntil: 0};
+            }
+        }
+
+        function writeAuthLock(attempts, until) {
+            try { localStorage.setItem(AUTH_LOCK_KEY, JSON.stringify({attempts: attempts, lockoutUntil: until})); } catch (e) { /* storage blocked */ }
+        }
+
+        function clearAuthLock() {
+            try { localStorage.removeItem(AUTH_LOCK_KEY); } catch (e) { /* storage blocked */ }
+        }
 
         function togglePass() {
             var input = document.getElementById('accessPassword');
@@ -1438,8 +1488,23 @@
             return diff === 0;
         }
 
+        function utf8ToBin(str) {
+            try {
+                if (typeof TextEncoder !== 'undefined') {
+                    var bytes = new TextEncoder().encode(str);
+                    var bin = '';
+                    for (var i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+                    return bin;
+                }
+            } catch (e) { /* fall through to legacy path */ }
+            try { return unescape(encodeURIComponent(str)); } catch (e) { return str; }
+        }
+
         function checkPassword() {
             var now = Date.now();
+            var lock = readAuthLock();
+            authAttempts = lock.attempts;
+            lockoutUntil = lock.lockoutUntil;
             if (now < lockoutUntil) {
                 setAuthError('Too many attempts. Try again shortly.');
                 return;
@@ -1447,9 +1512,11 @@
             var field = document.getElementById('accessPassword');
             var input = field.value;
             var inputHash = '';
-            try { inputHash = sha256(unescape(encodeURIComponent(input))); } catch (e) { inputHash = ''; }
+            try { inputHash = sha256(utf8ToBin(input)); } catch (e) { inputHash = ''; }
             if (hashEquals(inputHash, ACCESS_PASSWORD_HASH)) {
                 authAttempts = 0;
+                lockoutUntil = 0;
+                clearAuthLock();
                 try {
                     if (document.getElementById('rememberMe').checked) {
                         localStorage.setItem(REMEMBER_KEY, 'true');
@@ -1469,8 +1536,10 @@
                 if (authAttempts >= MAX_AUTH_ATTEMPTS) {
                     lockoutUntil = now + LOCKOUT_MS;
                     authAttempts = 0;
+                    writeAuthLock(0, lockoutUntil);
                     setAuthError('Too many attempts. Try again in 30 seconds.');
                 } else {
+                    writeAuthLock(authAttempts, 0);
                     setAuthError('Incorrect password');
                 }
                 field.value = '';
